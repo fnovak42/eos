@@ -9,7 +9,6 @@
 # {{{
 B^0->(Dpi)^+l^-nu::KinematicalDistribution[w]@Belle:2017A:
     type: MultivariateGaussian
-    dim: 9
     observables:
         - B->Dpilnu::P(w_min,w_max)
         - B->Dpilnu::P(w_min,w_max)
@@ -62,7 +61,6 @@ B^0->(Dpi)^+l^-nu::KinematicalDistribution[w]@Belle:2017A:
 
 B^0->(Dpi)^+l^-nu::KinematicalDistribution[c_D,c_l,chi]@Belle:2017A:
     type: MultivariateGaussian
-    dim: 30
     observables:
         - B->Dpilnu::P(c_D_min,c_D_max)
         - B->Dpilnu::P(c_D_min,c_D_max)
@@ -334,7 +332,6 @@ B^0->(Dpi)^+l^-nu::KinematicalDistribution[c_D,c_l,chi]@Belle:2017A:
     dof: 30
 B^0->(Dpi)^+l^-nu::KinematicalDistribution[w,c_D,c_l,chi]@Belle:2017A:
     type: MultivariateGaussian
-    dim: 40
     observables:
         - B->Dpilnu::P(w_min,w_max)
         - B->Dpilnu::P(w_min,w_max)
@@ -554,7 +551,6 @@ B^0->(Dpi)^+l^-nu::KinematicalDistribution[w,c_D,c_l,chi]@Belle:2017A:
 # {{{
 B^0->(Dpi)^+l^-nu::KinematicalDistribution[w]@Belle:2018A:
     type: MultivariateGaussian
-    dim: 9
     observables:
         - B->Dpilnu::P(w_min,w_max)
         - B->Dpilnu::P(w_min,w_max)

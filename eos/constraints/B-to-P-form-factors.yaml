@@ -55,7 +55,6 @@ B->pi::f_++f_0+f_T@FNAL+MILC:2015C:
   dof: 11
 B->pi::f_++f_0@RBC+UKQCD:2015A:
     type: MultivariateGaussian(Covariance)
-    dim: 6
     observables:
         - 'B->pi::f_+(q2)'
         - 'B->pi::f_+(q2)'
@@ -79,7 +78,6 @@ B->pi::f_++f_0@RBC+UKQCD:2015A:
     dof: 6
 B->pi::f_+@IKMvD:2014A:
     type: MultivariateGaussian
-    dim: 6
     observables:
         -   B->pi::f_+(q2)
         -   B->pi::f_+'(q2)
@@ -496,7 +494,6 @@ B->pi::FormFactors[parametric,LCSR+LQCD]@LvDM:2021A:
 # {{{
 B->K::f_0+f_++f_T@HPQCD:2013A:
     type: MultivariateGaussian
-    dim: 9
     observables:
         -   B->K::f_0(q2)
         -   B->K::f_0(q2)
@@ -545,7 +542,6 @@ B->K::f_0+f_++f_T@HPQCD:2013A:
 # The following FLAG entry is a combination of HPQCD:2013A and FNAL+MILC:2015D
 B->K::f_0+f_++f_T@FLAG:2021A:
     type: MultivariateGaussian
-    dim: 8
     observables:
         [ B->K::f_+(q2), B->K::f_+(q2), B->K::f_+(q2),
           B->K::f_0(q2), B->K::f_0(q2),
@@ -778,7 +774,6 @@ B->K::FormFactors[parametric,LCSRLattice]@GKvD:2018A:
   dof: 8
 B->K::FormFactors[f_+,f_T]@KR:2017A:
     type: MultivariateGaussian
-    dim: 4
     observables:
         -   B->K::f_+(q2)
         -   B->K::f_+(q2)
@@ -821,7 +816,6 @@ B->D::f_+@FKKM:2008A:
   dof: 1
 B->D::f_++f_0@HPQCD:2015A:
     type: MultivariateGaussian
-    dim: 5
     observables:
         -   B->D::f_+(q2)
         -   B->D::f_+(q2)
@@ -853,7 +847,6 @@ B->D::f_++f_0@HPQCD:2015A:
     dof: 5
 B->D::f_++f_0@FNAL+MILC:2015B:
     type: MultivariateGaussian
-    dim: 7
     observables:
         -   B->D::f_+(q2)
         -   B->D::f_+(q2)
