@@ -122,6 +122,13 @@ BBGORvD:2018A:
   inspire-id: Boer:2018vpx
   title: Testing lepton flavour universality in semileptonic $\Lambda_b \to \Lambda_c^*$
     decays
+BBJW:2018A:
+  authors: 'Beneke, M. and Braun, V. M. and Ji, Yao and Wei, Yan-Bing'
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:1804.04962
+  inspire-id: Beneke:2018wjp
+  title: 'Radiative leptonic decay $B\to \gamma \ell \nu_\ell$ with subleading power corrections'
 BBL:1995A:
   authors: Buchalla, Gerhard and Buras, Andrzej J. and Lautenbacher, Markus E.
   eprint:
@@ -310,6 +317,13 @@ BPR:2021A:
     id: oai:arXiv.org:2104.05739
   inspire-id: Bernlochner:2021rel
   title: '$B\to \rho \ell \bar{\nu}$ and $\omega\to \ell \bar{\nu}$ in and beyond the Standard Model: Improved predictions and $\abs{V_{ub}}$'
+BR:2011A:
+  authors: Beneke, M. and Rohrwild, J.
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:1110.3228
+  inspire-id: Beneke:2011nf
+  title: 'B meson distribution amplitude from B --\ensuremath{>} \textbackslash{}gamma l \textbackslash{}nu}'
 BS:2011A:
   authors: Becirevic, Damir and Schneider, Elia
   eprint:
@@ -906,6 +920,13 @@ FLS:2021A:
     id: oai:arXiv.org:2111.04327
   inspire-id: Felkl:2021uxi
   title: 'A Tale of Invisibility: Constraints on New Physics in $b\to s\nu\nu$'
+FLvD:2022A:
+  authors: Feldmann, Thorsten and Lueghausen, Philip and van Dyk, Danny
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:2203.15679
+  inspire-id: Feldmann:2022uok
+  title: 'Systematic Parametrization of the Leading $B$-meson Light-Cone Distribution Amplitude'
 FM:2002A:
   authors: Feldmann, Thorsten and Matias, Joaquim
   eprint:
@@ -1125,6 +1146,13 @@ IKMvD:2014A:
     id: oai:arXiv.org:1409.7816
   inspire-id: Imsong:2014oqa
   title: 'Extrapolation and unitarity bounds for the $B \to \pi$ form factor'
+KKVDZ:2022A:
+  authors: Kürten, Stephan and Zanke, Marvin and Kubis, Bastian and van Dyk, Danny
+  eprint:
+    archive: arXiv
+    id: oai:arXiv.org:2210.09832
+  inspire-id: Kurten:2022zuy
+  title: 'Dispersion relations for $B^- \to \ell^- \bar{\nu}_\ell \ell^{\prime-} \ell^{\prime+}$ form factors'
 KM:2005A:
   authors: Kruger, F. and Matias, J.
   eprint:

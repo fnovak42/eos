@@ -40,14 +40,14 @@ int main(int, char **)
 dnl }}}
 
 dnl {{{ check for compiler requirements
-dnl {{{ check for -std=c++17
-AC_MSG_CHECKING([for C++17 support])
-CHECK_CXXFLAG([-std=c++17])
+dnl {{{ check for -std=c++20
+AC_MSG_CHECKING([for C++20 support])
+CHECK_CXXFLAG([-std=c++20])
 dnl }}}
 dnl {{{ check for braced initializers
 AC_MSG_CHECKING([for braced initializers])
 save_CXXFLAGS=$CXXFLAGS
-CXXFLAGS="$CXXFLAGS -std=c++17"
+CXXFLAGS="$CXXFLAGS -std=c++20"
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 	struct Foo { double x, y; };
 	int main(int, char **)
@@ -65,7 +65,7 @@ dnl }}}
 dnl {{{ check for constexpr const
 AC_MSG_CHECKING([for constexpr const])
 save_CXXFLAGS=$CXXFLAGS
-CXXFLAGS="$CXXFLAGS -std=c++17"
+CXXFLAGS="$CXXFLAGS -std=c++20"
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 	struct X
 	{
@@ -83,7 +83,37 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 )
 CXXFLAGS=$save_CXXFLAGS
 dnl }}}
-CXXFLAGS="$CXXFLAGS -std=c++17"
+CXXFLAGS="$CXXFLAGS -std=c++20"
+dnl {{{ check for <source_location>
+AC_MSG_CHECKING([for <source_location>])
+save_CXXFLAGS=$CXXFLAGS
+CXXFLAGS="$CXXFLAGS -std=c++20"
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+	#ifdef __clang__
+	#  include <experimental/source_location>
+	#else
+	#  include <source_location>
+	#endif
+
+	#ifdef __clang__
+		using source_location = std::experimental::source_location;
+	#else
+		using source_location = std::source_location;
+	#endif
+
+	int main(int, char **)
+	{
+		auto loc = source_location::current();
+		return 0;
+	}
+])],
+	[AC_MSG_RESULT([yes])],
+	[AC_MSG_RESULT([no])
+	 AC_MSG_ERROR([your compiler does not support <source_location>])
+	]
+)
+CXXFLAGS=$save_CXXFLAGS
+dnl }}}
 dnl }}}
 
 dnl {{{ determine which pieces of EOS to build
@@ -355,7 +385,7 @@ AC_ARG_ENABLE([lto],
 dnl }}}
 
 dnl {{{ define default CXXFLAGS and LDFLAGS
-AM_CXXFLAGS="-I$ac_abs_confdir -std=c++17 -Wall -Wextra -pedantic"
+AM_CXXFLAGS="-I$ac_abs_confdir -std=c++20 -Wall -Wextra -pedantic"
 AM_LDFLAGS=""
 if test "x$enable_lto" == xyes ; then
     AM_CXXFLAGS="$AM_CXXFLAGS -flto"

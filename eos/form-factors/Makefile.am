@@ -6,6 +6,7 @@ AM_LDFLAGS = @AM_LDFLAGS@
 
 lib_LTLIBRARIES = libeosformfactors.la
 libeosformfactors_la_SOURCES = \
+	analytic-b-to-gamma-qcdf.cc analytic-b-to-gamma-qcdf.hh \
 	analytic-b-to-pi.hh analytic-b-to-pi.cc \
 	analytic-b-to-pi-pi.hh analytic-b-to-pi-pi.cc \
 	analytic-b-to-p-lcsr.hh analytic-b-to-p-lcsr-impl.hh \
@@ -17,6 +18,8 @@ libeosformfactors_la_SOURCES = \
 	baryonic.cc baryonic.hh baryonic-impl.hh \
 	baryonic-processes.hh \
 	b-lcdas.cc b-lcdas.hh \
+	b-lcdas-exponential.cc b-lcdas-exponential.hh \
+	b-lcdas-flvd2022.cc b-lcdas-flvd2022.hh \
 	form-factor-adapter.hh \
 	form-factors.cc form-factors.hh form-factors-fwd.hh \
 	hqet-b-to-c.hh hqet-b-to-c.cc \
@@ -33,6 +36,7 @@ libeosformfactors_la_SOURCES = \
 	parametric-bmrvd2022.hh parametric-bmrvd2022-impl.hh parametric-bmrvd2022.cc \
 	parametric-bsz2015.hh parametric-bsz2015-impl.hh parametric-bsz2015.cc \
 	parametric-fvdv2018.hh parametric-fvdv2018-impl.hh parametric-fvdv2018.cc \
+	parametric-kkvdz2022.hh parametric-kkvdz2022.cc \
 	parametric-kmpw2010.hh parametric-kmpw2010-impl.hh parametric-kmpw2010.cc \
 	pi-lcdas.cc pi-lcdas.hh \
 	unitarity-bounds.cc unitarity-bounds.hh \
@@ -51,6 +55,8 @@ include_eos_rarebdecays_HEADERS = \
 	analytic-b-to-pi.hh \
 	analytic-b-to-pi-pi.hh \
 	b-lcdas.hh \
+	b-lcdas-exponential.hh \
+	b-lcdas-flvd2022.hh \
 	form-factor-adapter.hh \
 	form-factors.hh \
 	observables.hh \
@@ -66,12 +72,14 @@ AM_TESTS_ENVIRONMENT = \
 	export EOS_TESTS_PARAMETERS="$(top_srcdir)/eos/parameters";
 
 TESTS = \
+	analytic-b-to-gamma-qcdf_TEST \
 	analytic-b-to-pi_TEST \
 	analytic-b-to-pi-pi_TEST \
 	analytic-b-to-p-lcsr_TEST \
 	analytic-b-to-v-lcsr_TEST \
 	baryonic_TEST \
-	b-lcdas_TEST \
+	b-lcdas-exponential_TEST \
+	b-lcdas-flvd2022_TEST \
 	hqet-b-to-c_TEST \
 	k-lcdas_TEST \
 	kstar-lcdas_TEST \
@@ -82,6 +90,7 @@ TESTS = \
 	parametric-bgjvd2019_TEST \
 	parametric-bmrvd2022_TEST \
 	parametric-bsz2015_TEST \
+	parametric-kkvdz2022_TEST \
 	parametric-kmpw2010_TEST \
 	pi-lcdas_TEST \
 	unitarity-bounds_TEST
@@ -95,6 +104,8 @@ LDADD = \
 
 check_PROGRAMS = $(TESTS)
 
+analytic_b_to_gamma_qcdf_TEST_SOURCES = analytic-b-to-gamma-qcdf_TEST.cc
+
 analytic_b_to_pi_TEST_SOURCES = analytic-b-to-pi_TEST.cc
 
 analytic_b_to_pi_pi_TEST_SOURCES = analytic-b-to-pi-pi_TEST.cc
@@ -106,7 +117,9 @@ analytic_b_to_v_lcsr_TEST_SOURCES = analytic-b-to-v-lcsr_TEST.cc
 
 baryonic_TEST_SOURCES = baryonic_TEST.cc
 
-b_lcdas_TEST_SOURCES = b-lcdas_TEST.cc
+b_lcdas_exponential_TEST_SOURCES = b-lcdas-exponential_TEST.cc
+
+b_lcdas_flvd2022_TEST_SOURCES = b-lcdas-flvd2022_TEST.cc
 
 hqet_b_to_c_TEST_SOURCES = hqet-b-to-c_TEST.cc
 
@@ -127,6 +140,8 @@ parametric_bgjvd2019_TEST_SOURCES = parametric-bgjvd2019_TEST.cc
 parametric_bsz2015_TEST_SOURCES = parametric-bsz2015_TEST.cc
 
 parametric_bmrvd2022_TEST_SOURCES = parametric-bmrvd2022_TEST.cc
+
+parametric_kkvdz2022_TEST_SOURCES = parametric-kkvdz2022_TEST.cc
 
 parametric_kmpw2010_TEST_SOURCES = parametric-kmpw2010_TEST.cc
 
