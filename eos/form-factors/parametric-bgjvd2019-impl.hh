@@ -796,13 +796,6 @@ namespace eos
     }
 
     template <typename Process_>
-    double
-    HQETFormFactors<Process_, PToV>::f_long_T_Normalized(const double &) const
-    {
-        return 0.;
-    }
-
-    template <typename Process_>
     Diagnostics
     HQETFormFactors<Process_, PToV>::diagnostics() const
     {
@@ -1279,8 +1272,8 @@ namespace eos
     double
     HQETFormFactors<Process_, VToV>::_w(const double & q2) const
     {
-        static constexpr double mV1 = Process_::mV1, mV12 = power_of<2>(Process_::mV1);
-        static constexpr double mV2 = Process_::mV2, mV22 = power_of<2>(Process_::mV2);
+        static constexpr double mV1 = Process_::m_V1, mV12 = power_of<2>(Process_::m_V1);
+        static constexpr double mV2 = Process_::m_V2, mV22 = power_of<2>(Process_::m_V2);
 
         return (mV12 + mV22 - q2) / (2.0 * mV1 * mV2);
     }
@@ -1289,8 +1282,8 @@ namespace eos
     double
     HQETFormFactors<Process_, VToV>::_q2(const double & w) const
     {
-        static constexpr double mV1 = Process_::mV1, mV12 = power_of<2>(Process_::mV1);
-        static constexpr double mV2 = Process_::mV2, mV22 = power_of<2>(Process_::mV2);
+        static constexpr double mV1 = Process_::m_V1, mV12 = power_of<2>(Process_::m_V1);
+        static constexpr double mV2 = Process_::m_V2, mV22 = power_of<2>(Process_::m_V2);
 
         return mV12 + mV22 - 2.0 * mV1 * mV2 * w;
     }

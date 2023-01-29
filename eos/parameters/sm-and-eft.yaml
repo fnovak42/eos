@@ -1322,7 +1322,7 @@ groups:
         The list of parameters describing the $\bar{s}b\bar{s}b$ Wilson coefficients in the effective Hamiltonian
         \begin{equation}
           \mathcal{H}^{\bar{s}b\bar{\nu}\nu}_\mathrm{eff}
-          = \frac{4 G_F}{\sqrt{2}} V_{tb}^* V_{ts} \sum_i \mathcal{C}^{\bar{s}b\bar{\nu}\nu}_i \mathcal{O}^{\bar{s}b\bar{\nu}\nu}_i\,.
+          = \frac{4 G_F}{\sqrt{2}} \frac{\alpha_e}{2 \pi} V_{tb}^* V_{ts} \sum_i \mathcal{C}^{\bar{s}b\bar{\nu}\nu}_i \mathcal{O}^{\bar{s}b\bar{\nu}\nu}_i\,.
         \end{equation}
         The operators read:
         \begin{align}
@@ -1345,9 +1345,9 @@ groups:
           unit:    'GeV'
         # Vector coefficients
       'sbnunu::Re{cVL}' :
-          central: 6.605426281
-          min:     6.605426281
-          max:     6.605426281
+          central: 6.613021606543314
+          min:     6.613021606543314
+          max:     6.613021606543314
           latex:   '$\mathrm{Re}\, \mathcal{C}^{\bar{s}b\bar{\nu}\nu}_{V_L}$'
       'sbnunu::Im{cVL}' :
           central: 0.0

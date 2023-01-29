@@ -17,8 +17,8 @@
  * Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ISSUE239_GUARD_EOS_FORM_FACTORS_MESONIC_PROCESSES_HH
-#define ISSUE239_GUARD_EOS_FORM_FACTORS_MESONIC_PROCESSES_HH 1
+#ifndef EOS_GUARD_EOS_FORM_FACTORS_MESONIC_PROCESSES_HH
+#define EOS_GUARD_EOS_FORM_FACTORS_MESONIC_PROCESSES_HH 1
 
 namespace eos
 {
@@ -27,36 +27,58 @@ namespace eos
     struct BToK {
         using Transition = PToP;
         static constexpr const char * label = "B->K";
+        static constexpr const char * name_B = "mass::B_d";
+        static constexpr const char * name_P = "mass::K_d";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::strange);
         static constexpr const double m_B = 5.279;
         static constexpr const double m_P = 0.492;
-        static constexpr const double m2_Br1m = 5.415 * 5.415; // B_s^*
-        static constexpr const double m2_Br0p = 5.630 * 5.630; // B_s scalar
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        // first resonances sorted by spin/parity
+        static constexpr double mR2_0p = 5.630 * 5.630; // B_s scalar
+        static constexpr double mR2_1m = 5.415 * 5.415; // B_s^*
+        // semileptonic kinematic endpoint
+        static constexpr double tm = (m_B - m_P) * (m_B - m_P);
+        // scalar pair production threshold: B + K
+        static constexpr double tp = (m_B + m_P) * (m_B + m_P);
+        // zero of the conformal mapping: z(t0, t0) = 0.0
+        // This optimal value follows from z(0, t0) = - z(tm, t0)
+        static constexpr double t0 = 14.7;
+        // Isospin-degeneracy factor
+        static constexpr double eta  = 2.0;
+        // OPE results for the unitarity bounds
+        static constexpr double chi_0p_v  = 1.42e-2;
+        static constexpr double chi_1m_v  = 1.20e-2 / (4.2 * 4.2);
+        static constexpr double chi_1m_t  = 0.803e-2 / (4.2 * 4.2);
+
         static constexpr const bool uses_tensor_form_factors = true;
     };
 
     struct BToPi {
         using Transition = PToP;
         static constexpr const char * label = "B->pi";
+        static constexpr const char * name_B = "mass::B_d";
+        static constexpr const char * name_P = "mass::pi^0";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::down);
         static constexpr const double m_B = 5.279;
         static constexpr const double m_P = 0.135;
-        static constexpr const double m2_Br1m = 5.325 * 5.325; // B_{u,d}^*
-        static constexpr const double m2_Br0p = 5.540 * 5.540; // B_{u,d} scalar: M(B_s scalar) - M(B_s^*) + M(B_{u,d}^*)
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 5.325 * 5.325; // B_{u,d}^*
+        static constexpr const double mR2_0p = 5.540 * 5.540; // B_{u,d} scalar: M(B_s scalar) - M(B_s^*) + M(B_{u,d}^*)
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
     };
 
     struct BsToK {
         using Transition = PToP;
         static constexpr const char * label = "B_s->K";
+        static constexpr const char * name_B = "mass::B_s";
+        static constexpr const char * name_P = "mass::K_d";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::down);
         static constexpr const double m_B = 5.366;
         static constexpr const double m_P = 0.494;
-        static constexpr const double m2_Br1m = 5.325 * 5.325; // B_{u,d}^*
-        static constexpr const double m2_Br0p = 5.540 * 5.540; // B_{u,d} scalar: M(B_s scalar) - M(B_s^*) + M(B_{u,d}^*)
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 5.325 * 5.325; // B_{u,d}^*
+        static constexpr const double mR2_0p = 5.540 * 5.540; // B_{u,d} scalar: M(B_s scalar) - M(B_s^*) + M(B_{u,d}^*)
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
     };
 
@@ -65,13 +87,14 @@ namespace eos
         static constexpr const char * label = "B->D";
         static constexpr const char * name_B = "mass::B_d";
         static constexpr const char * name_P = "mass::D_u";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::charm);
         static constexpr const double m_B = 5.279;
         static constexpr const double m_P = 1.870;
         // resonance masses from [HPQCD2015A]
-        static constexpr const double m2_Br1m = 6.330 * 6.330; // B_c^*
-        static constexpr const double m2_Br0p = 6.420 * 6.420; // B_c scalar
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 6.330 * 6.330; // B_c^*
+        static constexpr const double mR2_0p = 6.420 * 6.420; // B_c scalar
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
         static constexpr const char * hqe_prefix = "B(*)->D(*)";
     };
@@ -81,13 +104,14 @@ namespace eos
         static constexpr const char * label = "B_s->D_s";
         static constexpr const char * name_B = "mass::B_s";
         static constexpr const char * name_P = "mass::D_s";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::charm);
         static constexpr const double m_B = 5.366;
         static constexpr const double m_P = 1.968;
         // resonance masses from [HPQCD2015A]
-        static constexpr const double m2_Br1m = 6.330 * 6.330; // B_c^*
-        static constexpr const double m2_Br0p = 6.420 * 6.420; // B_c scalar
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 6.330 * 6.330; // B_c^*
+        static constexpr const double mR2_0p = 6.420 * 6.420; // B_c scalar
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
         static constexpr const char * hqe_prefix = "B_s(*)->D_s(*)";
     };
@@ -95,39 +119,47 @@ namespace eos
     struct DToPi {
         using Transition = PToP;
         static constexpr const char * label = "D->pi";
+        static constexpr const char * name_B = "mass::D_u";
+        static constexpr const char * name_P = "mass::pi^0";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::charm, QuarkFlavor::up);
         static constexpr const double m_B = 1.867;
         static constexpr const double m_P = 0.135;
-        static constexpr const double m2_Br1m = 2.007 * 2.007; // D^*0
-        static constexpr const double m2_Br0p = 2.300 * 2.300; // D^*0 scalar
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 2.007 * 2.007; // D^*0
+        static constexpr const double mR2_0p = 2.300 * 2.300; // D^*0 scalar
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
     };
 
     struct DToK {
         using Transition = PToP;
         static constexpr const char * label = "D->K";
+        static constexpr const char * name_B = "mass::D_u";
+        static constexpr const char * name_P = "mass::K_u";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::charm, QuarkFlavor::strange);
         static constexpr const double m_B = 1.867;
         static constexpr const double m_P = 0.492;
-        static constexpr const double m2_Br1m = 2.714 * 2.714; // Ds1
-        static constexpr const double m2_Br0p = 2.317 * 2.317; // Ds0
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 2.714 * 2.714; // Ds1
+        static constexpr const double mR2_0p = 2.317 * 2.317; // Ds0
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
     };
 
     struct DsToK {
         using Transition = PToP;
         static constexpr const char * label = "D_s->K";
+        static constexpr const char * name_B = "mass::D_s";
+        static constexpr const char * name_P = "mass::K_u";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::charm, QuarkFlavor::up);
         static constexpr const double m_B = 1.968;
         static constexpr const double m_P = 0.492;
-        static constexpr const double m2_Br1m = 2.007 * 2.007; // D^*0
-        static constexpr const double m2_Br0p = 2.300 * 2.300; // D^*0 scalar
-        static constexpr const double tau_p = (m_B + m_P) * (m_B + m_P);
-        static constexpr const double tau_m = (m_B - m_P) * (m_B - m_P);
+        static constexpr const double mR2_1m = 2.007 * 2.007; // D^*0
+        static constexpr const double mR2_0p = 2.300 * 2.300; // D^*0 scalar
+        static constexpr const double tp = (m_B + m_P) * (m_B + m_P);
+        static constexpr const double tm = (m_B - m_P) * (m_B - m_P);
         static constexpr const bool uses_tensor_form_factors = true;
     };
-
 
     /* P -> V Processes */
 
@@ -136,12 +168,13 @@ namespace eos
         static constexpr const char * label = "B->D^*";
         static constexpr const char * name_B = "mass::B_d";
         static constexpr const char * name_V = "mass::D_u^*";
-        static constexpr double mB = 5.279;
-        static constexpr double mV = 2.0103;
-        static constexpr double mBc = 6.2751;
-        static constexpr double mR2_0m = (mBc + 0.000) * (mBc + 0.000);
-        static constexpr double mR2_1m = (mBc + 0.056) * (mBc + 0.056);
-        static constexpr double mR2_1p = (mBc + 0.492) * (mBc + 0.492);
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::charm);
+        static constexpr double m_B = 5.279;
+        static constexpr double m_V = 2.0103;
+        static constexpr double m_Bc = 6.2751;
+        static constexpr double mR2_0m = (m_Bc + 0.000) * (m_Bc + 0.000);
+        static constexpr double mR2_1m = (m_Bc + 0.056) * (m_Bc + 0.056);
+        static constexpr double mR2_1p = (m_Bc + 0.492) * (m_Bc + 0.492);
         static constexpr const char * hqe_prefix = "B(*)->D(*)";
     };
 
@@ -150,30 +183,57 @@ namespace eos
         static constexpr const char * label = "B_s->D_s^*";
         static constexpr const char * name_B = "mass::B_s";
         static constexpr const char * name_V = "mass::D_s^*";
-        static constexpr double mB = 5.366;
-        static constexpr double mV = 2.1121;
-        static constexpr double mBc = 6.2751;
-        static constexpr double mR2_0m = (mBc + 0.000) * (mBc + 0.000);
-        static constexpr double mR2_1m = (mBc + 0.056) * (mBc + 0.056);
-        static constexpr double mR2_1p = (mBc + 0.492) * (mBc + 0.492);
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::charm);
+        static constexpr double m_B = 5.366;
+        static constexpr double m_V = 2.1121;
+        static constexpr double m_Bc = 6.2751;
+        static constexpr double mR2_0m = (m_Bc + 0.000) * (m_Bc + 0.000);
+        static constexpr double mR2_1m = (m_Bc + 0.056) * (m_Bc + 0.056);
+        static constexpr double mR2_1p = (m_Bc + 0.492) * (m_Bc + 0.492);
         static constexpr const char * hqe_prefix = "B_s(*)->D_s(*)";
     };
 
     struct BToKstar {
         using Transition = PToV;
         static constexpr const char * label = "B->K^*";
-        static constexpr double mB = 5.279;
-        static constexpr double mV = 0.896;
-        static constexpr double mR2_0m = 5.366 * 5.366;
-        static constexpr double mR2_1m = 5.415 * 5.415;
-        static constexpr double mR2_1p = 5.829 * 5.829;
+        static constexpr const char * name_B = "mass::B_d";
+        static constexpr const char * name_V = "mass::K_d^*";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::strange);
+        static constexpr double m_B = 5.279;
+        static constexpr double m_V = 0.896;
+        // // first resonances sorted by spin/parity
+        static constexpr double mR2_0m = 5.366 * 5.366; // B_s
+        static constexpr double mR2_0p = 5.630 * 5.630; // B_s scalar
+        static constexpr double mR2_1m = 5.415 * 5.415; // B_s^*
+        static constexpr double mR2_1p = 5.829 * 5.829; // B_s,1
+        // semileptonic kinematic endpoint
+        static constexpr double tm = (m_B - m_V) * (m_B - m_V);
+        // scalar pair production threshold: B + K
+        static constexpr double tp_v = (5.279 + 0.492) * (5.279 + 0.492);
+        // vector pair production threshold: B + K + pi
+        static constexpr double tp_a = (5.279 + 0.492 + 0.135) * (5.279 + 0.492 + 0.135);
+        // zero of the conformal mapping: z(t0, t0) = 0.0
+        // This optimal value follows from z(0, t0) ~ - z(tm, t0)
+        static constexpr double t0 = 11.5;
+        // Isospin-degeneracy factor
+        static constexpr double eta  = 2.0;
+        // OPE results for the unitarity bounds
+        static constexpr double chi_0m_a  = 1.57e-2;
+        static constexpr double chi_0p_v  = 1.42e-2;
+        static constexpr double chi_1m_v  = 1.20e-2 / (4.2 * 4.2);
+        static constexpr double chi_1p_a  = 1.13e-2 / (4.2 * 4.2);
+        static constexpr double chi_1m_t  = 0.803e-2 / (4.2 * 4.2);
+        static constexpr double chi_1p_t5 = 0.748e-2 / (4.2 * 4.2);
     };
 
     struct BToOmega {
         using Transition = PToV;
         static constexpr const char * label = "B->omega";
-        static constexpr double mB = 5.279;
-        static constexpr double mV = 0.7827;
+        static constexpr const char * name_B = "mass::B_d";
+        static constexpr const char * name_V = "mass::omega";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::down);
+        static constexpr double m_B = 5.279;
+        static constexpr double m_V = 0.7827;
         static constexpr double mR2_0m = 5.279 * 5.279;
         static constexpr double mR2_1m = 5.325 * 5.325;
         static constexpr double mR2_1p = 5.724 * 5.724;
@@ -182,8 +242,11 @@ namespace eos
     struct BToRho {
         using Transition = PToV;
         static constexpr const char * label = "B->rho";
-        static constexpr double mB = 5.279;
-        static constexpr double mV = 0.7751;
+        static constexpr const char * name_B = "mass::B_d";
+        static constexpr const char * name_V = "mass::rho^0";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::down);
+        static constexpr double m_B = 5.279;
+        static constexpr double m_V = 0.7751;
         static constexpr double mR2_0m = 5.279 * 5.279;
         static constexpr double mR2_1m = 5.325 * 5.325;
         static constexpr double mR2_1p = 5.724 * 5.724;
@@ -192,18 +255,44 @@ namespace eos
     struct BsToPhi {
         using Transition = PToV;
         static constexpr const char * label = "B_s->phi";
-        static constexpr double mB = 5.366;
-        static constexpr double mV = 1.020;
-        static constexpr double mR2_0m = 5.366 * 5.366;
-        static constexpr double mR2_1m = 5.415 * 5.415;
-        static constexpr double mR2_1p = 5.829 * 5.829;
+        static constexpr const char * name_B = "mass::B_s";
+        static constexpr const char * name_V = "mass::phi";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::strange);
+        static constexpr double m_B = 5.366;
+        static constexpr double m_V = 1.020;
+        // // first resonances sorted by spin/parity
+        static constexpr double mR2_0m = 5.366 * 5.366; // B_s
+        static constexpr double mR2_0p = 5.630 * 5.630; // B_s scalar
+        static constexpr double mR2_1m = 5.415 * 5.415; // B_s^*
+        static constexpr double mR2_1p = 5.829 * 5.829; // B_s,1
+        // semileptonic kinematic endpoint
+        static constexpr double tm = (m_B - m_V) * (m_B - m_V);
+        // scalar pair production threshold: B + K
+        static constexpr double tp_v = (5.279 + 0.492) * (5.279 + 0.492);
+        // vector pair production threshold: B + K + pi
+        static constexpr double tp_a = (5.279 + 0.492 + 0.135) * (5.279 + 0.492 + 0.135);
+        // zero of the conformal mapping: z(t0, t0) = 0.0
+        // This optimal value follows from z(0, t0) ~ - z(tm, t0)
+        static constexpr double t0 = 11.5;
+        // Isospin-degeneracy factor
+        static constexpr double eta  = 1.0;
+        // OPE results for the unitarity bounds
+        static constexpr double chi_0m_a  = 1.57e-2;
+        static constexpr double chi_0p_v  = 1.42e-2;
+        static constexpr double chi_1m_v  = 1.20e-2 / (4.2 * 4.2);
+        static constexpr double chi_1p_a  = 1.13e-2 / (4.2 * 4.2);
+        static constexpr double chi_1m_t  = 0.803e-2 / (4.2 * 4.2);
+        static constexpr double chi_1p_t5 = 0.748e-2 / (4.2 * 4.2);
     };
 
     struct BsToKstar {
         using Transition = PToV;
         static constexpr const char * label = "B_s->K^*";
-        static constexpr double mB = 5.366;
-        static constexpr double mV = 0.896;
+        static constexpr const char * name_B = "mass::B_s";
+        static constexpr const char * name_V = "mass::K_d^*";
+        static constexpr const std::tuple<QuarkFlavor, QuarkFlavor> partonic_transition = std::make_tuple(QuarkFlavor::bottom, QuarkFlavor::down);
+        static constexpr double m_B = 5.366;
+        static constexpr double m_V = 0.896;
         static constexpr double mR2_0m = 5.279 * 5.279;
         static constexpr double mR2_1m = 5.325 * 5.325;
         static constexpr double mR2_1p = 5.723 * 5.723;
@@ -214,12 +303,12 @@ namespace eos
     struct BToPiPi {
         using Transition = PToPP;
         static constexpr const char * label = "B->pipi";
-        static constexpr double mB  = 5.2795;
-        static constexpr double mP1 = 0.13957;
-        static constexpr double mP2 = 0.13957;
+        static constexpr double m_B  = 5.2795;
+        static constexpr double m_P1 = 0.13957;
+        static constexpr double m_P2 = 0.13957;
 
         // for pole and t_0 calculation in zhat
-        static constexpr double mBst = 5.32465;
+        static constexpr double m_Bst = 5.32465;
 
         // for pole calculation in z, depending on the current at hand
         static constexpr double mR2_1m = 5.32465;
@@ -234,10 +323,10 @@ namespace eos
         static constexpr const char * label    = "B^*->D";
         static constexpr const char * name_Bst = "mass::B_d^*";
         static constexpr const char * name_P   = "mass::D_u";
-        static constexpr const double mBc  = 6.2751;
-        static constexpr const double mR2_0m = (mBc + 0.000) * (mBc + 0.000);
-        static constexpr const double mR2_1m = (mBc + 0.056) * (mBc + 0.056);
-        static constexpr const double mR2_1p = (mBc + 0.492) * (mBc + 0.492);
+        static constexpr const double m_Bc  = 6.2751;
+        static constexpr const double mR2_0m = (m_Bc + 0.000) * (m_Bc + 0.000);
+        static constexpr const double mR2_1m = (m_Bc + 0.056) * (m_Bc + 0.056);
+        static constexpr const double mR2_1p = (m_Bc + 0.492) * (m_Bc + 0.492);
         static constexpr const char * hqe_prefix = "B(*)->D(*)";
     };
 
@@ -248,10 +337,10 @@ namespace eos
         static constexpr const char * name_P   = "mass::D_s";
         static constexpr const double m_B = 5.324;
         static constexpr const double m_P = 1.968;
-        static constexpr const double mBc  = 6.2751;
-        static constexpr const double mR2_0m = (mBc + 0.000) * (mBc + 0.000);
-        static constexpr const double mR2_1m = (mBc + 0.056) * (mBc + 0.056);
-        static constexpr const double mR2_1p = (mBc + 0.492) * (mBc + 0.492);
+        static constexpr const double m_Bc  = 6.2751;
+        static constexpr const double mR2_0m = (m_Bc + 0.000) * (m_Bc + 0.000);
+        static constexpr const double mR2_1m = (m_Bc + 0.056) * (m_Bc + 0.056);
+        static constexpr const double mR2_1p = (m_Bc + 0.492) * (m_Bc + 0.492);
         static constexpr const char * hqe_prefix = "B_s(*)->D_s(*)";
     };
 
@@ -262,12 +351,12 @@ namespace eos
         static constexpr const char * label = "B^*->D^*";
         static constexpr const char * name_Bst = "mass::B_d^*";
         static constexpr const char * name_V   = "mass::D_u^*";
-        static constexpr const double mV1 = 5.324;
-        static constexpr const double mV2 = 2.010;
-        static constexpr const double mBc = 6.2751;
-        static constexpr const double mR2_0m = (mBc + 0.000) * (mBc + 0.000);
-        static constexpr const double mR2_1m = (mBc + 0.056) * (mBc + 0.056);
-        static constexpr const double mR2_1p = (mBc + 0.492) * (mBc + 0.492);
+        static constexpr const double m_V1 = 5.324;
+        static constexpr const double m_V2 = 2.010;
+        static constexpr const double m_Bc = 6.2751;
+        static constexpr const double mR2_0m = (m_Bc + 0.000) * (m_Bc + 0.000);
+        static constexpr const double mR2_1m = (m_Bc + 0.056) * (m_Bc + 0.056);
+        static constexpr const double mR2_1p = (m_Bc + 0.492) * (m_Bc + 0.492);
         static constexpr const char * hqe_prefix = "B(*)->D(*)";
     };
 
@@ -278,10 +367,10 @@ namespace eos
         static constexpr const char * name_P   = "mass::D_s";
         static constexpr const double m_B = 5.324;
         static constexpr const double m_V = 2.010;
-        static constexpr const double mBc  = 6.2751;
-        static constexpr const double mR2_0m = (mBc + 0.000) * (mBc + 0.000);
-        static constexpr const double mR2_1m = (mBc + 0.056) * (mBc + 0.056);
-        static constexpr const double mR2_1p = (mBc + 0.492) * (mBc + 0.492);
+        static constexpr const double m_Bc  = 6.2751;
+        static constexpr const double mR2_0m = (m_Bc + 0.000) * (m_Bc + 0.000);
+        static constexpr const double mR2_1m = (m_Bc + 0.056) * (m_Bc + 0.056);
+        static constexpr const double mR2_1p = (m_Bc + 0.492) * (m_Bc + 0.492);
         static constexpr const char * hqe_prefix = "B_s(*)->D_s(*)";
     };
 }

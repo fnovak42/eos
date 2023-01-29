@@ -213,6 +213,7 @@ class Plotter:
             self.label         = item['label']   if 'label'   in item else None
             self.xsamples      = item['samples'] if 'samples' in item else 100
             self.style         = item['style']   if 'style'   in item else 'solid'
+            self.lw            = item['lw']      if 'lw'      in item else None
             self.xlo, self.xhi = item['range']   if 'range'   in item else self.plotter.xrange
 
         def __lt__(self, other):
@@ -455,7 +456,7 @@ class Plotter:
                 var.set(xvalue)
                 ovalues = np.append(ovalues, observable.evaluate())
 
-            plt.plot(xvalues, ovalues, alpha=self.alpha, color=self.color, label=self.label, ls=self.style)
+            plt.plot(xvalues, ovalues, alpha=self.alpha, color=self.color, label=self.label, ls=self.style, lw=self.lw)
 
     class Uncertainty(BasePlot):
         """Plots an uncertainty band as a function of one kinematic variable
@@ -600,11 +601,18 @@ class Plotter:
 
             if 'area' in self.band:
                 self.plotter.ax.fill_between(xvalues, ovalues_lower, ovalues_higher, alpha=self.alpha, color=self.color, label=self.label, lw=0)
-            if 'outer' in self.band:
-                self.plotter.ax.plot(xvalues, ovalues_lower,                         alpha=self.alpha, color=self.color, ls=self.style)
-                self.plotter.ax.plot(xvalues, ovalues_higher,                        alpha=self.alpha, color=self.color, ls=self.style)
-            if 'median' in self.band:
-                self.plotter.ax.plot(xvalues, ovalues_central,                       alpha=self.alpha, color=self.color, ls=self.style)
+                if 'outer' in self.band:
+                    self.plotter.ax.plot(xvalues, ovalues_lower,                     alpha=self.alpha, color=self.color, ls=self.style, lw=self.lw)
+                    self.plotter.ax.plot(xvalues, ovalues_higher,                    alpha=self.alpha, color=self.color, ls=self.style, lw=self.lw)
+                if 'median' in self.band:
+                    self.plotter.ax.plot(xvalues, ovalues_central,                   alpha=self.alpha, color=self.color, ls=self.style, lw=self.lw)
+            elif 'outer' in self.band:
+                self.plotter.ax.plot(xvalues, ovalues_lower,                         alpha=self.alpha, color=self.color, ls=self.style, label=self.label, lw=self.lw)
+                self.plotter.ax.plot(xvalues, ovalues_higher,                        alpha=self.alpha, color=self.color, ls=self.style, lw=self.lw)
+                if 'median' in self.band:
+                    self.plotter.ax.plot(xvalues, ovalues_central,                   alpha=self.alpha, color=self.color, ls=self.style, lw=self.lw)
+            elif 'median' in self.band:
+                self.plotter.ax.plot(xvalues, ovalues_central,                       alpha=self.alpha, color=self.color, ls=self.style, label=self.label, lw=self.lw)
 
 
     class UncertaintyBinned(BasePlot):
@@ -858,8 +866,8 @@ class Plotter:
                             if self.rescale_by_width:
                                 width = (_kinematics[self.variable + '_max'] - _kinematics[self.variable + '_min'])
 
-                        yvalues.append(np.float(means[i]) / width)
-                        yerrors.append(np.sqrt(np.float(covariance[i, i])) / width)
+                        yvalues.append(np.double(means[i]) / width)
+                        yerrors.append(np.sqrt(np.double(covariance[i, i])) / width)
                 elif constraint['type'] == 'MultivariateGaussian':
                     if not self.observable:
                         raise KeyError('observable needs to be specified for MultivariateGaussian constraints')

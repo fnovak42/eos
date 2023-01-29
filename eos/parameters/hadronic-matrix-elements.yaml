@@ -42,6 +42,199 @@ groups:
           latex:    '$R_5^{B_s\leftrightarrow \bar{B}_s}$'
   # }}}
 
+  # Masses used in BSZ-like Form Factor Parametrizations
+  # {{{
+  - title: 'Masses used in BSZ-like Form Factor Parametrizations'
+    description: ''
+    parameters:
+      'mass::pi^0@BSZ2015' :
+          central: +0.135
+          min:     +0.135
+          max:     +0.135
+          latex:    '$m_{\pi^0}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::pi^+@BSZ2015' :
+          central: +0.135
+          min:     +0.135
+          max:     +0.135
+          latex:    '$m_{\pi^\pm}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::K_d@BSZ2015' :
+          central: +0.492
+          min:     +0.492
+          max:     +0.492
+          latex:    '$m_{K_d}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::K_u@BSZ2015' :
+          central: +0.492
+          min:     +0.492
+          max:     +0.492
+          latex:    '$m_{K_u}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::D_d@BSZ2015' :
+          central: +1.870
+          min:     +1.870
+          max:     +1.870
+          latex:   '$m_{D^\pm}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::D_u@BSZ2015' :
+          central: +1.867
+          min:     +1.867
+          max:     +1.867
+          latex:   '$m_{D^0}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::D_s@BSZ2015' :
+          central: +1.968
+          min:     +1.968
+          max:     +1.968
+          latex:   '$m_{D_s}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::rho^+@BSZ2015' :
+          central: +0.7751
+          min:     +0.7751
+          max:     +0.7751
+          latex:   '$m_{\rho^\pm}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::rho^0@BSZ2015' :
+          central: +0.7751
+          min:     +0.7751
+          max:     +0.7751
+          latex:   '$m_{\rho^0}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::omega@BSZ2015' :
+          central: +0.7827
+          min:     +0.7827
+          max:     +0.7827
+          latex:   '$m_{\omega}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::phi@BSZ2015' :
+          central: +1.02
+          min:     +1.02
+          max:     +1.02
+          latex:   '$m_{\phi}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_d@BSZ2015' :
+          central: +5.279
+          min:     +5.279
+          max:     +5.279
+          latex:    '$m_{B_d}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_u@BSZ2015' :
+          central: +5.279
+          min:     +5.279
+          max:     +5.279
+          latex:    '$m_{B_u}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_s@BSZ2015' :
+          central: +5.366
+          min:     +5.366
+          max:     +5.366
+          latex:    '$m_{B_s}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_c@BSZ2015' :
+          central: +6.2751
+          min:     +6.2751
+          max:     +6.2751
+          latex:    '$m_{B_c}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::K_d^*@BSZ2015' :
+          central: +0.896
+          min:     +0.896
+          max:     +0.896
+          latex:   '$m_{K^{0*}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::K_u^*@BSZ2015' :
+          central: +0.896
+          min:     +0.896
+          max:     +0.896
+          latex:   '$m_{K^{\pm*}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::D_d^*@BSZ2015' :
+          central: +2.0103
+          min:     +2.0103
+          max:     +2.0103
+          latex:   '$m_{D^{\pm*}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::D_u^*@BSZ2015' :
+          central: +2.0103
+          min:     +2.0103
+          max:     +2.0103
+          latex:   '$m_{D^{0*}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::D_s^*@BSZ2015' :
+          central: +2.1121
+          min:     +2.1121
+          max:     +2.1121
+          latex:   '$m_{D_s^*}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_d^*@BSZ2015' :
+          central: +5.325
+          min:     +5.325
+          max:     +5.325
+          latex:   '$m_{B^*}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_s^*@BSZ2015' :
+          central: +5.415
+          min:     +5.415
+          max:     +5.415
+          latex:   '$m_{B_s^*}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_c^*@BSZ2015' :
+          central: +6.3311
+          min:     +6.3311
+          max:     +6.3311
+          latex:   '$m_{B_c^*}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_d,0@BSZ2015' :
+          central: +5.540
+          min:     +5.540
+          max:     +5.540
+          latex:   '$m_{B_{d,0}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_s,0@BSZ2015' :
+          central: +5.630
+          min:     +5.630
+          max:     +5.630
+          latex:   '$m_{B_{s,0}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_c,0@BSZ2015' :
+          central: +6.420
+          min:     +6.420
+          max:     +6.420
+          latex:   '$m_{B_{c,0}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_d,1@BSZ2015' :
+          central: +5.724
+          min:     +5.724
+          max:     +5.724
+          latex:   '$m_{B_{d,1}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_s,1@BSZ2015' :
+          central: +5.829
+          min:     +5.829
+          max:     +5.829
+          latex:   '$m_{B_{s,1}}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::B_c,1@BSZ2015' :
+          central: +6.7671
+          min:     +6.7671
+          max:     +6.7671
+          latex:   '$m_{B_c^*}^\mathrm{BSZ}$'
+          unit:     'GeV'
+      'mass::Lambda@BMRvD2022' :
+          central: +1.115683
+          min:     +1.115683
+          max:     +1.115683
+          latex:   '$m_{\Lambda}^\mathrm{BMRvD}$'
+          unit:     'GeV'
+      'mass::Lambda_b@BMRvD2022' :
+          central: +5.61951
+          min:     +5.61951
+          max:     +5.61951
+          latex:   '$m_{\Lambda_b}^\mathrm{BMRvD}$'
+          unit:     'GeV'
+  # }}}
+
   # Parameters in B -> P Form Factor Parametrizations
   # {{{
   - title: 'Parameters in $B\to P$ Form Factor Parametrizations'
@@ -196,6 +389,22 @@ groups:
           max:     -0.2580355775883392
           latex:    '$\alpha_{T,2}^{B \to \pi,\mathrm{BSZ2015}}$'
           unit:     '1'
+      # form factor parameters for B->K for [BFW:2010A] parametrization
+      'B->K::a^%1%_%2%@BFW2010' :
+          central:  0.
+          min:     -1.0
+          max:     +1.0
+          unit:     '1'
+          latex:    '$a_%2%^{%1%,B \to K,\mathrm{BFW2010}}$'
+          matrix:
+            - ["f+", "f0", "fT"]
+            - [0, 1, 2, 3, 4]
+      'B->K::t0@BFW2010' :
+          central:  14.7
+          min:      14.7
+          max:      14.7
+          latex:   '$t_0^{B\to K}$'
+          unit:     'GeV'
       # form factor parameters for B->K for [BCL:2008A] parametrization
       'B->K::f_+(0)@BCL2008' :
           central: +0.0
@@ -1164,7 +1373,37 @@ groups:
           max:     +1.8831160249369858
           latex:    '$\alpha_{T_{23},2}^{B \to K^*,\mathrm{BSZ2015}}$'
           unit:     '1'
-      # form factor parameters for B_s->phi inspired by [BSZ:2015A]
+      # form factor parameters for B_s->phi for [BFW:2010A] parametrization
+      'B->K^*::a^%1%_%2%@BFW2010' :
+          central:  0.
+          min:     -1.0
+          max:     +1.0
+          unit:     '1'
+          latex:    '$a_%2%^{%1%,B \to K^*,\mathrm{BFW2010}}$'
+          matrix:
+            - ["V", "A0", "A1", "A12", "T1", "T2", "T23"]
+            - [0, 1, 2, 3, 4]
+      'B->K^*::tp_a@BFW2010' :
+          central:  34.880836
+          min:      34.880836
+          max:      34.880836
+          latex:    '$t_+^{A, B\to K^*}$'
+          comment:  '(mB + mK + mpi)^2'
+          unit:     'GeV'
+      'B->K^*::tp_v@BFW2010' :
+          central:  33.304441
+          min:      33.304441
+          max:      33.304441
+          latex:    '$t_+^{V, B\to K^*}$'
+          comment:  '(mB + mK)^2'
+          unit:     'GeV'
+      'B->K^*::t0@BFW2010' :
+          central:  11.5
+          min:      11.5
+          max:      11.5
+          latex:    '$t_0^{B\to K^*}$'
+          unit:     'GeV'
+       # form factor parameters for B_s->phi inspired by [BSZ:2015A]
       'B_s->phi::alpha^A0_0@BSZ2015' :
           central:  0.388675
           min:      0.388675
@@ -1278,6 +1517,36 @@ groups:
           min:      4.93525
           max:      4.93525
           latex:    '$\alpha_{T_{23},2}^{B_s \to \phi,\mathrm{BSZ2015}}$'
+      # form factor parameters for B_s->phi for [BFW:2010A] parametrization
+      'B_s->phi::a^%1%_%2%@BFW2010' :
+          central:  0.
+          min:     -1.0
+          max:     +1.0
+          unit:     '1'
+          latex:    '$a_%2%^{%1%,B_s \to \phi,\mathrm{BFW2010}}$'
+          matrix:
+            - ["V", "A0", "A1", "A12", "T1", "T2", "T23"]
+            - [0, 1, 2, 3, 4]
+      'B_s->phi::tp_a@BFW2010' :
+          central:  34.880836
+          min:      34.880836
+          max:      34.880836
+          latex:    '$t_+^{A, B_s\to\phi}$'
+          comment:  '(mB + mK + mpi)^2'
+          unit:     'GeV'
+      'B_s->phi::tp_v@BFW2010' :
+          central:  33.304441
+          min:      33.304441
+          max:      33.304441
+          latex:    '$t_+^{V, B_s\to\phi}$'
+          comment:  '(mB + mK)^2'
+          unit:     'GeV'
+      'B_s->phi::t0@BFW2010' :
+          central:  11.5
+          min:      11.5
+          max:      11.5
+          latex:    '$t_0^{B_s\to\phi}$'
+          unit:     'GeV'
       # new updated results based on a combined LQCD&LCSR fit from the GKvD2018 calculation
       # Use (B.6) of [BSZ:2015A] to replace A_12(0), and T_1(0) = T_2(0) to replace T_2(0).
       'B->D^*::alpha^A0_0@BSZ2015' :
@@ -3584,6 +3853,26 @@ groups:
           comments: ''
       # form factor parameters for Lambda_b -> Lambda decays according to
       # [BMRvD:2022A]
+      'Lambda_b->Lambda::tp_a@BMRvD2022' :
+          central:  33.327529
+          min:      33.327529
+          max:      33.327529
+          latex:    '$t_+^{A, \Lambda_b \to \Lambda ,\mathrm{BMRvD2022}}$'
+          comment:  'For simplicity (mB + mK)^2 was used in BMRvD:2022A'
+          unit:     'GeV^2'
+      'Lambda_b->Lambda::tp_v@BMRvD2022' :
+          central:  33.327529
+          min:      33.327529
+          max:      33.327529
+          latex:    '$t_+^{V, \Lambda_b \to \Lambda ,\mathrm{BMRvD2022}}$'
+          comment:  '(mB + mK)^2'
+          unit:     'GeV^2'
+      'Lambda_b->Lambda::t0@BMRvD2022' :
+          central:  20.284457646
+          min:      20.284457646
+          max:      20.284457646
+          latex:    '$t_0^{\Lambda_b \to \Lambda ,\mathrm{BMRvD2022}}$'
+          unit:     'GeV^2'
       'Lambda_b->Lambda::a^(t,V)_1@BMRvD2022' :
           central:  0.4896605330254244
           min:     -1.0

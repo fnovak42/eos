@@ -26,6 +26,7 @@
 #include <eos/form-factors/analytic-b-to-p-lcsr.hh>
 #include <eos/form-factors/analytic-b-to-v-lcsr.hh>
 #include <eos/form-factors/parametric-bcl2008.hh>
+#include <eos/form-factors/parametric-bfw2010.hh>
 #include <eos/form-factors/parametric-bgl1997.hh>
 #include <eos/form-factors/parametric-bgjvd2019.hh>
 #include <eos/form-factors/parametric-bsz2015.hh>
@@ -43,37 +44,6 @@ namespace eos
 {
     /* P -> V Processes */
 
-    /* B_{u,d} -> omega */
-
-    /* B_{u,d} -> K^* */
-
-    constexpr double BToDstar::mR2_0m;
-    constexpr double BToDstar::mR2_1m;
-    constexpr double BToDstar::mR2_1p;
-
-    constexpr double BToKstar::mR2_0m;
-    constexpr double BToKstar::mR2_1m;
-    constexpr double BToKstar::mR2_1p;
-
-    constexpr double BToRho::mR2_0m;
-    constexpr double BToRho::mR2_1m;
-    constexpr double BToRho::mR2_1p;
-
-    constexpr double BsToPhi::mR2_0m;
-    constexpr double BsToPhi::mR2_1m;
-    constexpr double BsToPhi::mR2_1p;
-
-    constexpr double BsToKstar::mR2_0m;
-    constexpr double BsToKstar::mR2_1m;
-    constexpr double BsToKstar::mR2_1p;
-
-    constexpr double BsToDsstar::mR2_0m;
-    constexpr double BsToDsstar::mR2_1m;
-    constexpr double BsToDsstar::mR2_1p;
-
-
-
-
     FormFactors<PToV>::~FormFactors()
     {
     }
@@ -85,6 +55,7 @@ namespace eos
         { "B->rho::BSZ2015",      &BSZ2015FormFactors<BToRho,     PToV>::make         },
         { "B->K^*::KMPW2010",     &KMPW2010FormFactors<PToV>::make                    },
         { "B->K^*::BSZ2015",      &BSZ2015FormFactors<BToKstar,   PToV>::make         },
+        { "B->K^*::BFW2010",      &BFW2010FormFactors<BToKstar,   PToV>::make         },
         { "B->D^*::BSZ2015",      &BSZ2015FormFactors<BToDstar,   PToV>::make         },
         { "B->D^*::BGJvD2019",    &HQETFormFactors<BToDstar,      PToV>::make         },
         { "B->D^*::BGL1997",      &BGL1997FormFactors<BToDstar>::make                 },
@@ -92,6 +63,7 @@ namespace eos
         { "B_s->D_s^*::BSZ2015",  &BSZ2015FormFactors<BsToDsstar, PToV>::make         },
         { "B_s->D_s^*::BGJvD2019",&HQETFormFactors<BsToDsstar,    PToV>::make         },
         { "B_s->phi::BSZ2015",    &BSZ2015FormFactors<BsToPhi,    PToV>::make         },
+        { "B_s->phi::BFW2010",    &BFW2010FormFactors<BsToPhi,    PToV>::make         },
         // analytic computations
         { "B->K^*::B-LCSR",       &AnalyticFormFactorBToVLCSR<lcsr::BToKstar>::make   },
         { "B->D^*::B-LCSR",       &AnalyticFormFactorBToVLCSR<lcsr::BToDstar>::make   },
@@ -197,6 +169,12 @@ namespace eos
         return result;
     }
 
+    /* B_{u,d} -> omega */
+
+    /* B_{u,d} -> K^* */
+
+    /* B_s -> phi */
+
     /* P -> gamma Processes */
 
     FormFactors<PToGamma>::~FormFactors()
@@ -277,12 +255,6 @@ namespace eos
 
     /* P -> P Processes */
 
-    /* B_{u,d} -> K */
-
-    // [BCL2008]
-    template class BCL2008FormFactors<BToK, 3u>;
-
-
     /* B_{u,d} -> pi */
 
     /* B_{u,d} -> D */
@@ -320,6 +292,7 @@ namespace eos
         { "B->K::BCL2008",       &BCL2008FormFactors<BToK, 3u>::make              },
         { "B->K::KMPW2010",      &KMPW2010FormFactors<PToP>::make                 },
         { "B->K::BSZ2015",       &BSZ2015FormFactors<BToK,   PToP>::make          },
+        { "B->K::BFW2010",       &BFW2010FormFactors<BToK,   PToP>::make          },
         // b -> u
         { "B->pi::BCL2008",      &BCL2008FormFactors<BToPi, 3u>::make             },
         { "B->pi::BCL2008-4",    &BCL2008FormFactors<BToPi, 4u>::make             },
@@ -408,22 +381,9 @@ namespace eos
         return result;
     }
 
+    /* B_{u,d} -> pi */
+
     /* P -> PP Processes */
-
-    constexpr double BToPi::m2_Br1m;
-    constexpr double BToPi::m2_Br0p;
-
-    constexpr double BToK::m2_Br1m;
-    constexpr double BToK::m2_Br0p;
-
-    constexpr double BToD::m2_Br1m;
-    constexpr double BToD::m2_Br0p;
-
-    constexpr double BsToK::m2_Br1m;
-    constexpr double BsToK::m2_Br0p;
-
-    constexpr double BsToDs::m2_Br1m;
-    constexpr double BsToDs::m2_Br0p;
 
     FormFactors<PToPP>::~FormFactors()
     {

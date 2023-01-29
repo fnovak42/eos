@@ -24,10 +24,10 @@
 #include <eos/form-factors/analytic-b-to-v-lcsr.hh>
 #include <eos/form-factors/analytic-b-to-p-lcsr.hh>
 #include <eos/form-factors/b-lcdas.hh>
-#include <eos/form-factors/baryonic-impl.hh>
 #include <eos/form-factors/observables.hh>
 #include <eos/form-factors/parametric-abr2022.hh>
 #include <eos/form-factors/parametric-bgjvd2019.hh>
+#include <eos/form-factors/parametric-bfw2010.hh>
 #include <eos/form-factors/parametric-bmrvd2022.hh>
 #include <eos/form-factors/parametric-kkvdz2022.hh>
 #include <eos/form-factors/unitarity-bounds.hh>
@@ -201,6 +201,24 @@ namespace eos
                 make_expression_observable("B->K::F_plus_T(q2)/F_plus(q2)", R"(F_{+,T}(q^2)/F_+(q^2))",
                         Unit::None(),
                         R"( <<B->K::F_plus_T(q2)>> / <<B->K::F_plus(q2)>> )"),
+
+                make_observable("B->K::Saturation[0^+_V]", R"(\textrm{Saturation}[0^+_V])", Unit::None(),
+                        &BFW2010FormFactors<BToK, PToP>::saturation_0p_v),
+
+                make_observable("B->K::Saturation[1^-_V]", R"(\textrm{Saturation}[1^-_V])", Unit::None(),
+                        &BFW2010FormFactors<BToK, PToP>::saturation_1m_v),
+
+                make_observable("B->K::Saturation[0^-_A]", R"(\textrm{Saturation}[0^-_A])", Unit::None(),
+                        &BFW2010FormFactors<BToK, PToP>::saturation_0m_a),
+
+                make_observable("B->K::Saturation[1^+_A]", R"(\textrm{Saturation}[1^+_A])", Unit::None(),
+                        &BFW2010FormFactors<BToK, PToP>::saturation_1p_a),
+
+                make_observable("B->K::Saturation[1^-_T]", R"(\textrm{Saturation}[1^-_T])", Unit::None(),
+                        &BFW2010FormFactors<BToK, PToP>::saturation_1m_t),
+
+                make_observable("B->K::Saturation[1^+_T5]", R"(\textrm{Saturation}[1^+_{T_5}])", Unit::None(),
+                        &BFW2010FormFactors<BToK, PToP>::saturation_1p_t5)
             }
         );
 
@@ -674,9 +692,6 @@ namespace eos
                 make_form_factor_adapter("B->K^*::F_long_T(q2)", R"(\mathcal{F}_{0,T}^{B\to K^*}(q^2))",
                         &FormFactors<PToV>::f_long_T, std::make_tuple("q2")),
 
-                make_form_factor_adapter("B->K^*::F_long_T(q2)_Normalized",
-                        &FormFactors<PToV>::f_long_T_Normalized, std::make_tuple("q2")),
-
                 make_expression_observable("B->K^*::V(q2)/A_1(q2)", R"(V(q^2)/A_1(q^2))",
                         Unit::None(),
                         R"( <<B->K^*::V(q2)>> / <<B->K^*::A_1(q2)>> )"),
@@ -740,9 +755,23 @@ namespace eos
                         Unit::None(),
                         R"( <<B->K^*::F_long_T(q2)>> / <<B->K^*::F_long(q2)>> )"),
 
-                make_expression_observable("B->K^*::F_long_T(q2)/F_long(q2)_Normalized", R"(\mathcal{N} \mathcal{F}_{0,T}(q^2)/\mathcal{F}_0(q^2))",
-                        Unit::None(),
-                        R"( <<B->K^*::F_long_T(q2)_Normalized>> / <<B->K^*::F_long(q2)>> )"),
+                make_observable("B->K^*::Saturation[0^+_V]", R"(\textrm{Saturation}[0^+_V])", Unit::None(),
+                        &BFW2010FormFactors<BToKstar, PToV>::saturation_0p_v),
+
+                make_observable("B->K^*::Saturation[1^-_V]", R"(\textrm{Saturation}[1^-_V])", Unit::None(),
+                        &BFW2010FormFactors<BToKstar, PToV>::saturation_1m_v),
+
+                make_observable("B->K^*::Saturation[0^-_A]", R"(\textrm{Saturation}[0^-_A])", Unit::None(),
+                        &BFW2010FormFactors<BToKstar, PToV>::saturation_0m_a),
+
+                make_observable("B->K^*::Saturation[1^+_A]", R"(\textrm{Saturation}[1^+_A])", Unit::None(),
+                        &BFW2010FormFactors<BToKstar, PToV>::saturation_1p_a),
+
+                make_observable("B->K^*::Saturation[1^-_T]", R"(\textrm{Saturation}[1^-_T])", Unit::None(),
+                        &BFW2010FormFactors<BToKstar, PToV>::saturation_1m_t),
+
+                make_observable("B->K^*::Saturation[1^+_T5]", R"(\textrm{Saturation}[1^+_{T_5}])", Unit::None(),
+                        &BFW2010FormFactors<BToKstar, PToV>::saturation_1p_t5)
             }
         );
 
@@ -1110,9 +1139,6 @@ namespace eos
                 make_form_factor_adapter("B_s->phi::F_long_T(q2)", R"(\mathcal{F}_{0,T}^{B_s\to \phi}(q^2))",
                         &FormFactors<PToV>::f_long_T, std::make_tuple("q2")),
 
-                make_form_factor_adapter("B_s->phi::F_long_T(q2)_Normalized",
-                        &FormFactors<PToV>::f_long_T_Normalized, std::make_tuple("q2")),
-
                 make_expression_observable("B_s->phi::V(q2)/A_1(q2)", R"(V(q^2)/A_1(q^2))",
                         Unit::None(),
                         R"( <<B_s->phi::V(q2)>> / <<B_s->phi::A_1(q2)>> )"),
@@ -1176,9 +1202,24 @@ namespace eos
                         Unit::None(),
                         R"( <<B_s->phi::F_long_T(q2)>> / <<B_s->phi::F_long(q2)>> )"),
 
-                make_expression_observable("B_s->phi::F_long_T(q2)/F_long(q2)_Normalized", R"(\mathcal{N} \mathcal{F}_{0,T}(q^2)/\mathcal{F}_0(q^2))",
-                        Unit::None(),
-                        R"( <<B_s->phi::F_long_T(q2)_Normalized>> / <<B_s->phi::F_long(q2)>> )"),
+
+                make_observable("B_s->phi::Saturation[0^+_V]", R"(\textrm{Saturation}[0^+_V])", Unit::None(),
+                        &BFW2010FormFactors<BsToPhi, PToV>::saturation_0p_v),
+
+                make_observable("B_s->phi::Saturation[1^-_V]", R"(\textrm{Saturation}[1^-_V])", Unit::None(),
+                        &BFW2010FormFactors<BsToPhi, PToV>::saturation_1m_v),
+
+                make_observable("B_s->phi::Saturation[0^-_A]", R"(\textrm{Saturation}[0^-_A])", Unit::None(),
+                        &BFW2010FormFactors<BsToPhi, PToV>::saturation_0m_a),
+
+                make_observable("B_s->phi::Saturation[1^+_A]", R"(\textrm{Saturation}[1^+_A])", Unit::None(),
+                        &BFW2010FormFactors<BsToPhi, PToV>::saturation_1p_a),
+
+                make_observable("B_s->phi::Saturation[1^-_T]", R"(\textrm{Saturation}[1^-_T])", Unit::None(),
+                        &BFW2010FormFactors<BsToPhi, PToV>::saturation_1m_t),
+
+                make_observable("B_s->phi::Saturation[1^+_T5]", R"(\textrm{Saturation}[1^+_{T_5}])", Unit::None(),
+                        &BFW2010FormFactors<BsToPhi, PToV>::saturation_1p_t5)
             }
         );
 
@@ -1370,41 +1411,23 @@ namespace eos
                 make_form_factor_adapter("Lambda_b->Lambda::f_perp^T5(q2)", R"(f_\perp^{T5,\Lambda_b\to\Lambda}(q^2))",
                         &FormFactors<OneHalfPlusToOneHalfPlus>::f_perp_t5, std::make_tuple("q2")),
 
-                make_observable("Lambda_b->Lambda::Bound[0^+]@BMRvD2022", R"(\textrm{Bound[$0^+$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_0p),
+                make_observable("Lambda_b->Lambda::Saturation[0^+_V]", R"(\textrm{Saturation}[0^+_V])", Unit::None(),
+                        &BMRvD2022FormFactors<LambdaBToLambda>::saturation_0p_v),
 
-                make_observable("Lambda_b->Lambda::Bound[1^-]@BMRvD2022", R"(\textrm{Bound[$1^-$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_1m),
+                make_observable("Lambda_b->Lambda::Saturation[1^-_V]", R"(\textrm{Saturation}[1^-_V])", Unit::None(),
+                        &BMRvD2022FormFactors<LambdaBToLambda>::saturation_1m_v),
 
-                make_observable("Lambda_b->Lambda::Bound[0^-]@BMRvD2022", R"(\textrm{Bound[$0^-$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_0m),
+                make_observable("Lambda_b->Lambda::Saturation[0^-_A]", R"(\textrm{Saturation}[0^-_A])", Unit::None(),
+                        &BMRvD2022FormFactors<LambdaBToLambda>::saturation_0m_a),
 
-                make_observable("Lambda_b->Lambda::Bound[1^+]@BMRvD2022", R"(\textrm{Bound[$1^+$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_1p),
+                make_observable("Lambda_b->Lambda::Saturation[1^+_A]", R"(\textrm{Saturation}[1^+_A])", Unit::None(),
+                        &BMRvD2022FormFactors<LambdaBToLambda>::saturation_1p_a),
 
-                make_observable("Lambda_b->Lambda::Bound[T]@BMRvD2022", R"(\textrm{Bound[$T$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_T),
+                make_observable("Lambda_b->Lambda::Saturation[1^-_T]", R"(\textrm{Saturation}[1^-_T])", Unit::None(),
+                        &BMRvD2022FormFactors<LambdaBToLambda>::saturation_1m_t),
 
-                make_observable("Lambda_b->Lambda::Bound[T5]@BMRvD2022", R"(\textrm{Bound[$T5$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_T5),
-
-                make_observable("Lambda_b->Lambda::Prior[0^+]@BMRvD2022", R"(\textrm{Prior[$0^+$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_0p_prior),
-
-                make_observable("Lambda_b->Lambda::Prior[1^-]@BMRvD2022", R"(\textrm{Prior[$1^-$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_1m_prior),
-
-                make_observable("Lambda_b->Lambda::Prior[0^-]@BMRvD2022", R"(\textrm{Prior[$0^-$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_0m_prior),
-
-                make_observable("Lambda_b->Lambda::Prior[1^+]@BMRvD2022", R"(\textrm{Prior[$1^+$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_1p_prior),
-
-                make_observable("Lambda_b->Lambda::Prior[T]@BMRvD2022", R"(\textrm{Prior[$T$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_T_prior),
-
-                make_observable("Lambda_b->Lambda::Prior[T5]@BMRvD2022", R"(\textrm{Prior[$T5$]})", Unit::None(),
-                        &BMRvD2022FormFactors<LambdaBToLambda>::bound_T5_prior),
+                make_observable("Lambda_b->Lambda::Saturation[1^+_T5]", R"(\textrm{Saturation}[1^+_{T_5}])", Unit::None(),
+                        &BMRvD2022FormFactors<LambdaBToLambda>::saturation_1p_t5),
             }
         );
 
@@ -1532,22 +1555,22 @@ namespace eos
                 make_form_factor_adapter("Lambda_b->Lambda(1520)::f_perp32^T5(q2)", R"(f_{\perp'}^{T5,\Lambda_b\to\Lambda(1520)}(q^2))",
                         &FormFactors<OneHalfPlusToThreeHalfMinus>::f_perp32_t5, std::make_tuple("q2")),
 
-                make_observable("Lambda_b->Lambda(1520)::Saturation[0^+_V]@ABR2022", R"(\textrm{Saturation}[0^+_V])", Unit::None(),
+                make_observable("Lambda_b->Lambda(1520)::Saturation[0^+_V]", R"(\textrm{Saturation}[0^+_V])", Unit::None(),
                         &ABR2022FormFactors<LambdaBToLambda1520>::saturation_0p_v),
 
-                make_observable("Lambda_b->Lambda(1520)::Saturation[1^-_V]@ABR2022", R"(\textrm{Saturation}[1^-_V])", Unit::None(),
+                make_observable("Lambda_b->Lambda(1520)::Saturation[1^-_V]", R"(\textrm{Saturation}[1^-_V])", Unit::None(),
                         &ABR2022FormFactors<LambdaBToLambda1520>::saturation_1m_v),
 
-                make_observable("Lambda_b->Lambda(1520)::Saturation[0^-_A]@ABR2022", R"(\textrm{Saturation}[0^-_A])", Unit::None(),
+                make_observable("Lambda_b->Lambda(1520)::Saturation[0^-_A]", R"(\textrm{Saturation}[0^-_A])", Unit::None(),
                         &ABR2022FormFactors<LambdaBToLambda1520>::saturation_0m_a),
 
-                make_observable("Lambda_b->Lambda(1520)::Saturation[1^+_A]@ABR2022", R"(\textrm{Saturation}[1^+_A])", Unit::None(),
+                make_observable("Lambda_b->Lambda(1520)::Saturation[1^+_A]", R"(\textrm{Saturation}[1^+_A])", Unit::None(),
                         &ABR2022FormFactors<LambdaBToLambda1520>::saturation_1p_a),
 
-                make_observable("Lambda_b->Lambda(1520)::Saturation[1^-_T]@ABR2022", R"(\textrm{Saturation}[1^-_T])", Unit::None(),
+                make_observable("Lambda_b->Lambda(1520)::Saturation[1^-_T]", R"(\textrm{Saturation}[1^-_T])", Unit::None(),
                         &ABR2022FormFactors<LambdaBToLambda1520>::saturation_1m_t),
 
-                make_observable("Lambda_b->Lambda(1520)::Saturation[1^+_T5]@ABR2022", R"(\textrm{Saturation}[1^+_{T_5}])", Unit::None(),
+                make_observable("Lambda_b->Lambda(1520)::Saturation[1^+_T5]", R"(\textrm{Saturation}[1^+_{T_5}])", Unit::None(),
                         &ABR2022FormFactors<LambdaBToLambda1520>::saturation_1p_t5),
             }
         );
