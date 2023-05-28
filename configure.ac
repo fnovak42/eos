@@ -1,6 +1,6 @@
 dnl vim: set sw=8 sts=8 noet ft=config foldmethod=marker foldmarker={{{,}}}:
 
-AC_INIT([EOS],[1.0.5])
+AC_INIT([EOS],[1.0.7])
 AC_PREREQ([2.69])
 AC_CONFIG_SRCDIR([])
 AC_CONFIG_AUX_DIR(config)
@@ -413,9 +413,6 @@ AC_CONFIG_FILES([Makefile
 	eos/rare-b-decays/Makefile
 	eos/statistics/Makefile
 	eos/utils/Makefile
-	manual/Makefile
-	manual/appendices/Makefile
-	manual/figures/Makefile
 	src/Makefile
 	src/clients/Makefile
 	src/scripts/Makefile

@@ -810,8 +810,20 @@ namespace eos
             Parameters parameters(Parameters::Defaults());
             ObservableCache cache(parameters);
 
-            std::vector<ObservablePtr> observables(dim, nullptr);
-            for (auto i = 0u ; i < dim ; ++i)
+            // If specified, these options allow to specify a subset of the measurements
+            const unsigned begin = destringify<unsigned>(options.get("begin", "0"));
+            const unsigned end = destringify<unsigned>(options.get("end", stringify(dim)));
+
+            if (end > dim)
+                throw InvalidOptionValueError("End of the measurements sub-sample: end", options.get("end", stringify(dim)) , "Cannot use a value of 'end' pointing beyond the number of measurements.");
+
+            if (begin >= end)
+                throw InvalidOptionValueError("First measurement of the sub-sample: begin", options.get("begin", "0"), "Cannot use a value for 'begin' equal to or larger than 'end'");
+
+            const unsigned subdim_meas = end - begin;
+
+            std::vector<ObservablePtr> observables(subdim_meas, nullptr);
+            for (auto i = begin ; i < end ; ++i)
             {
                 for (const auto & [key, value] : this->options[i])
                 {
@@ -822,43 +834,46 @@ namespace eos
                     }
                 }
 
-                observables[i] = Observable::make(this->observable_names[i], parameters, this->kinematics[i], this->options[i] + options);
-                if (! observables[i].get())
+                observables[i - begin] = Observable::make(this->observable_names[i], parameters, this->kinematics[i], this->options[i] + options);
+                if (! observables[i - begin].get())
                     throw InternalError("make_multivariate_gaussian_constraint<" + stringify(dim) + ">: " + name.str() + ": '" + this->observable_names[i].str() + "' is not a valid observable name");
             }
 
-            std::vector<double> variances(dim, 0.0);
+            std::vector<double> variances(subdim_meas, 0.0);
             if ("symmetric+quadratic" == options.get("uncertainty", "symmetric+quadratic"))
             {
-                for (auto i = 0u ; i < dim ; ++i)
+                for (auto i = begin ; i < end ; ++i)
                 {
                     double combined_lo = power_of<2>(sigma_stat_lo[i]) + power_of<2>(sigma_sys[i]);
                     double combined_hi = power_of<2>(sigma_stat_hi[i]) + power_of<2>(sigma_sys[i]);
 
-                    variances[i] = std::max(combined_lo, combined_hi);
+                    variances[i - begin] = std::max(combined_lo, combined_hi);
                 }
             }
 
             // create GSL vector for the mean
-            gsl_vector * means = gsl_vector_alloc(dim);
-            for (auto i = 0u ; i < dim ; ++i)
+            gsl_vector * means = gsl_vector_alloc(subdim_meas);
+            for (auto i = begin ; i < end ; ++i)
             {
-                gsl_vector_set(means, i, this->means[i]);
+                gsl_vector_set(means, i - begin, this->means[i]);
             }
 
             // create GSL matrix for the covariance
-            gsl_matrix * covariance = gsl_matrix_alloc(dim, dim);
-            for (auto i = 0u ; i < dim ; ++i)
+            gsl_matrix * covariance = gsl_matrix_alloc(subdim_meas, subdim_meas);
+            for (auto i = begin ; i < end ; ++i)
             {
-                for (auto j = 0u ; j < dim ; ++j)
+                for (auto j = begin ; j < end ; ++j)
                 {
-                    double value = std::sqrt(variances[i] * variances[j]) * correlation[i][j];
-                    gsl_matrix_set(covariance, i, j, value);
+                    double value = std::sqrt(variances[i - begin] * variances[j - begin]) * correlation[i][j];
+                    gsl_matrix_set(covariance, i - begin, j - begin, value);
                 }
             }
 
-            gsl_matrix * response = gsl_matrix_calloc(dim, dim);
+            gsl_matrix * response = gsl_matrix_calloc(subdim_meas, subdim_meas);
             gsl_matrix_set_identity(response);
+
+            if (subdim_meas != response->size2)
+                throw InternalError("Constraint " + name.full() + ": number of predictions and number of columns in response matrix are not identical");
 
             LogLikelihoodBlockPtr block = LogLikelihoodBlock::MultivariateGaussian(cache, observables, means, covariance, response, number_of_observations);
 
@@ -1175,15 +1190,21 @@ namespace eos
                     throw InternalError("make_multivariate_gaussian_covariance_constraint<measurements=" + stringify(dim_meas) + ",predictions=" + stringify(dim_pred) + ">: " + name.str() + ": '" + this->observables[i].str() + "' is not a valid observable name");
             }
 
-            //If specified, these options allow to specify a subset of the measurements
+            // If specified, these options allow to specify a subset of the measurements
             unsigned begin = destringify<unsigned>(options.get("begin", "0"));
             unsigned end = destringify<unsigned>(options.get("end", stringify(dim_meas)));
 
             if (end > dim_meas)
-                throw InvalidOptionValueError("End of the measurements sub-sample: end", options.get("end", stringify(dim_meas)) , "Cannot use a value of 'end' pointing beyond the number of measurements.");
+                throw InvalidOptionValueError("End of the measurements sub-sample: end", options.get("end", stringify(dim_meas)), "Cannot use a value of 'end' pointing beyond the number of measurements.");
 
             if (begin >= end)
                 throw InvalidOptionValueError("First measurement of the sub-sample: begin", options.get("begin", "0"), "Cannot use a value for 'begin' equal to or larger than 'end'");
+
+            if ((nullptr != this->response) && (end != dim_meas))
+                throw InternalError("Response matrices and begin and end options are mutually incompatible.");
+
+            if ((nullptr != this->response) && (begin != 0))
+                throw InternalError("Response matrices and begin and end options are mutually incompatible.");
 
             unsigned subdim_meas = end - begin;
 
@@ -1197,21 +1218,32 @@ namespace eos
             gsl_matrix_view covariance_subset = gsl_matrix_submatrix(this->covariance.get(), begin, begin, subdim_meas, subdim_meas);
             gsl_matrix_memcpy(covariance, &(covariance_subset.matrix));
 
-            // create GSL matrix for the response
-            gsl_matrix * response = gsl_matrix_calloc(subdim_meas, dim_pred);
             if (this->response)
             {
+                // create GSL matrix for the response
+                gsl_matrix * response = gsl_matrix_calloc(subdim_meas, dim_pred);
                 gsl_matrix_view covariance_subset = gsl_matrix_submatrix(this->response.get(), begin, 0, subdim_meas, dim_pred);
                 gsl_matrix_memcpy(response, &(covariance_subset.matrix));
+
+                auto block = LogLikelihoodBlock::MultivariateGaussian(cache, observables, means, covariance, response, number_of_observations);
+
+                return Constraint(name, std::vector<ObservablePtr>(observables.begin(), observables.end()), { block });
             }
             else
             {
+                // extract the observables
+                std::vector<ObservablePtr>::const_iterator first_obs = observables.begin() + begin;
+                std::vector<ObservablePtr>::const_iterator last_obs  = observables.begin() + end;
+                std::vector<ObservablePtr> restricted_observables(first_obs, last_obs);
+
+                // create GSL matrix for the response
+                gsl_matrix * response = gsl_matrix_calloc(subdim_meas, subdim_meas);
                 gsl_matrix_set_identity(response);
+
+                auto block = LogLikelihoodBlock::MultivariateGaussian(cache, restricted_observables, means, covariance, response, number_of_observations);
+
+                return Constraint(name, std::vector<ObservablePtr>(restricted_observables.begin(), restricted_observables.end()), { block });
             }
-
-            auto block = LogLikelihoodBlock::MultivariateGaussian(cache, observables, means, covariance, response, subdim_meas);
-
-            return Constraint(name, std::vector<ObservablePtr>(observables.begin(), observables.end()), { block });
         }
 
         virtual std::ostream & insert(std::ostream & os) const

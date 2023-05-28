@@ -107,9 +107,9 @@ namespace eos
     {
         private:
             // fit parametrization for P -> V according to [BFW:2010A]
-            std::array<UsedParameter, 5> _a_A0, _a_A1, _a_V, _a_T1, _a_T23;
-            // use constraint (B.6) in [BFW:2010A] to remove A_12(0)
-            std::array<UsedParameter, 4> _a_A12, _a_T2;
+            std::array<UsedParameter, 5> _a_A0, _a_V, _a_T1;
+            // use endpoint relations (see eq. (3.2) in [HLMW:2015A]) to remove parameters
+            std::array<UsedParameter, 4> _a_A12, _a_T2, _a_A1, _a_T23;
 
             const BFW2010FormFactorTraits<Process_, PToV> _traits;
 
@@ -131,6 +131,8 @@ namespace eos
             // End-point relations
             double _a_A12_0() const;
             double _a_T2_0() const;
+            double _a_A1_0() const;
+            double _a_T23_0() const;
 
         public:
             BFW2010FormFactors(const Parameters & p, const Options &);
@@ -156,14 +158,47 @@ namespace eos
             virtual double f_para_T(const double & s) const;
             virtual double f_long_T(const double & s) const;
 
+            // Saturations of the dispersive bounds
+            // J = 0
             double saturation_0p_v() const;
-            double saturation_1m_v() const;
             double saturation_0m_a() const;
+            // J = 1
+            double saturation_1m_v_0() const;
+            double saturation_1m_v_perp() const;
+            double saturation_1m_v_para() const;
+            double saturation_1m_v() const;
+            double saturation_1p_a_0() const;
+            double saturation_1p_a_perp() const;
+            double saturation_1p_a_para() const;
             double saturation_1p_a() const;
+            double saturation_1m_t_0() const;
+            double saturation_1m_t_perp() const;
+            double saturation_1m_t_para() const;
             double saturation_1m_t() const;
+            double saturation_1p_t5_0() const;
+            double saturation_1p_t5_perp() const;
+            double saturation_1p_t5_para() const;
             double saturation_1p_t5() const;
 
             Diagnostics diagnostics() const;
+
+
+            // Auxilliary functions: series and derivative of the series
+            double v_series(const double & s) const;
+            double a_0_series(const double & s) const;
+            double a_1_series(const double & s) const;
+            double a_12_series(const double & s) const;
+            double t_1_series(const double & s) const;
+            double t_2_series(const double & s) const;
+            double t_23_series(const double & s) const;
+
+            double v_series_prime(const double & s) const;
+            double a_0_series_prime(const double & s) const;
+            double a_1_series_prime(const double & s) const;
+            double a_12_series_prime(const double & s) const;
+            double t_1_series_prime(const double & s) const;
+            double t_2_series_prime(const double & s) const;
+            double t_23_series_prime(const double & s) const;
 
             /*!
              * References used in the computation of our observables.
@@ -192,7 +227,7 @@ namespace eos
             // the ones used for the extraction of the coefficients of the z-expension
             UsedParameter m_B, m_P;
             UsedParameter m_R_0p, m_R_1m;
-            UsedParameter t0;
+            UsedParameter tp, t0;
 
             static const std::map<std::tuple<QuarkFlavor, QuarkFlavor>, std::string> resonance_0p_names;
             static const std::map<std::tuple<QuarkFlavor, QuarkFlavor>, std::string> resonance_1m_names;
@@ -202,13 +237,9 @@ namespace eos
                 m_P(UsedParameter(p[std::string(Process_::name_P) + "@BSZ2015"], *this)),
                 m_R_0p(UsedParameter(p[resonance_0p_names.at(Process_::partonic_transition)], *this)),
                 m_R_1m(UsedParameter(p[resonance_1m_names.at(Process_::partonic_transition)], *this)),
+                tp(UsedParameter(p[std::string(Process_::label) + "::tp@BFW2010"], *this)),
                 t0(UsedParameter(p[std::string(Process_::label) + "::t0@BFW2010"], *this))
             {
-            }
-
-            double tp() const
-            {
-                return power_of<2>(m_B + m_P);
             }
 
             double tm() const
@@ -235,6 +266,22 @@ namespace eos
                 const SzegoPolynomial<5> polynomials_set(SzegoPolynomial<5>::FlatMeasure(2 * M_PI));
 
                 return polynomials_set(z);
+            }
+
+            std::array<complex<double>, 6> orthonormal_polynomials(const complex<double> & z) const
+            {
+                const double measure = 2 * std::arg(calc_z(complex<double>(power_of<2>(m_B + m_P)), complex<double>(tp), complex<double>(t0)));
+                const SzegoPolynomial<5> polynomials_set(SzegoPolynomial<5>::FlatMeasure(measure));
+
+                return polynomials_set(z);
+            }
+
+            std::array<complex<double>, 6> orthonormal_polynomials_derivatives(const complex<double> & z) const
+            {
+                const double measure = 2 * std::arg(calc_z(complex<double>(power_of<2>(m_B + m_P)), complex<double>(tp), complex<double>(t0)));
+                const SzegoPolynomial<5> polynomials_set(SzegoPolynomial<5>::FlatMeasure(measure));
+
+                return polynomials_set.derivatives(z);
             }
     };
 
@@ -277,14 +324,38 @@ namespace eos
 
             virtual double f_plus_T(const double & s) const;
 
+            // Saturations of the dispersive bounds
+            // J = 0
             double saturation_0p_v() const;
-            double saturation_1m_v() const;
             double saturation_0m_a() const;
+            // J = 1
+            double saturation_1m_v_0() const;
+            double saturation_1m_v_perp() const;
+            double saturation_1m_v_para() const;
+            double saturation_1m_v() const;
+            double saturation_1p_a_0() const;
+            double saturation_1p_a_perp() const;
+            double saturation_1p_a_para() const;
             double saturation_1p_a() const;
+            double saturation_1m_t_0() const;
+            double saturation_1m_t_perp() const;
+            double saturation_1m_t_para() const;
             double saturation_1m_t() const;
+            double saturation_1p_t5_0() const;
+            double saturation_1p_t5_perp() const;
+            double saturation_1p_t5_para() const;
             double saturation_1p_t5() const;
 
             Diagnostics diagnostics() const;
+
+            // Auxilliary functions: series and derivative of the series
+            double f_p_series(const double & s) const;
+            double f_0_series(const double & s) const;
+            double f_t_series(const double & s) const;
+
+            double f_p_series_prime(const double & s) const;
+            double f_0_series_prime(const double & s) const;
+            double f_t_series_prime(const double & s) const;
 
             /*!
              * References used in the computation of our observables.

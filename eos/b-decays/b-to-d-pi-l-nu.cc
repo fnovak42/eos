@@ -43,9 +43,6 @@ namespace eos
             m_l(p["mass::" + opt_l.value()], u),
             ff(FormFactorFactory<PToV>::create("B->D^*::" + o.get("form-factors", "BGJvD2019"), p, o))
         {
-            if (! ff.get())
-                throw InternalError("Form factors not found!");
-
             u.uses(*ff);
         }
 
@@ -375,10 +372,10 @@ namespace eos
 
             const double m_l2         = m_l() * m_l();
 
-            const double a_long       = this->a_long(q2); 
-            const double a_para       = this->a_para(q2); 
-            const double a_perp       = this->a_perp(q2); 
-            const double a_time       = this->a_time(q2); 
+            const double a_long       = this->a_long(q2);
+            const double a_para       = this->a_para(q2);
+            const double a_perp       = this->a_perp(q2);
+            const double a_time       = this->a_time(q2);
 
             const double a_long2      = norm(a_long);
             const double a_para2      = norm(a_para);

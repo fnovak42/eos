@@ -63,12 +63,6 @@ namespace eos
                 UsedParameter(p[_par_name("A0", 3)],  *this),
                 UsedParameter(p[_par_name("A0", 4)],  *this)
         },
-        _a_A1{  UsedParameter(p[_par_name("A1", 0)],  *this),
-                UsedParameter(p[_par_name("A1", 1)],  *this),
-                UsedParameter(p[_par_name("A1", 2)],  *this),
-                UsedParameter(p[_par_name("A1", 3)],  *this),
-                UsedParameter(p[_par_name("A1", 4)],  *this)
-        },
         _a_V{   UsedParameter(p[_par_name("V", 0)],   *this),
                 UsedParameter(p[_par_name("V", 1)],   *this),
                 UsedParameter(p[_par_name("V", 2)],   *this),
@@ -81,12 +75,6 @@ namespace eos
                 UsedParameter(p[_par_name("T1", 3)],  *this),
                 UsedParameter(p[_par_name("T1", 4)],  *this)
         },
-        _a_T23{ UsedParameter(p[_par_name("T23", 0)], *this),
-                UsedParameter(p[_par_name("T23", 1)], *this),
-                UsedParameter(p[_par_name("T23", 2)], *this),
-                UsedParameter(p[_par_name("T23", 3)], *this),
-                UsedParameter(p[_par_name("T23", 4)], *this)
-        },
         _a_A12{ UsedParameter(p[_par_name("A12", 1)], *this),
                 UsedParameter(p[_par_name("A12", 2)], *this),
                 UsedParameter(p[_par_name("A12", 3)], *this),
@@ -96,6 +84,16 @@ namespace eos
                 UsedParameter(p[_par_name("T2", 2)],  *this),
                 UsedParameter(p[_par_name("T2", 3)],  *this),
                 UsedParameter(p[_par_name("T2", 4)],  *this)
+        },
+        _a_A1{  UsedParameter(p[_par_name("A1", 1)],  *this),
+                UsedParameter(p[_par_name("A1", 2)],  *this),
+                UsedParameter(p[_par_name("A1", 3)],  *this),
+                UsedParameter(p[_par_name("A1", 4)],  *this)
+        },
+        _a_T23{ UsedParameter(p[_par_name("T23", 1)], *this),
+                UsedParameter(p[_par_name("T23", 2)], *this),
+                UsedParameter(p[_par_name("T23", 3)], *this),
+                UsedParameter(p[_par_name("T23", 4)], *this)
         },
         _traits(BFW2010FormFactorTraits<Process_, PToV>(p)),
         _mB(_traits.m_B),
@@ -129,12 +127,12 @@ namespace eos
         // [GvDV:2022B]
         const double z = _traits.calc_z(t, threshold_tp, _traits.t0),
             kinematic_tp = power_of<2>(_mB + _mV);
-        const double norm = std::sqrt(Process_::eta * pow(kinematic_tp, A) * pow(_traits.tm(), B)
-                                * pow(4 * _mB * _mV, C) / 8 / k / M_PI / M_PI / chi);
+        const double norm = std::sqrt(Process_::eta * k * pow(kinematic_tp, A) * pow(_traits.tm(), B)
+                                * pow(4 * _mB * _mV, C) / 32 / M_PI / M_PI / chi);
 
         // set Q^2 to 0
         const double invt = 1 / ( 2.0 * (std::sqrt(threshold_tp) * std::sqrt(threshold_tp - t) + threshold_tp) - t); // simplification of -_traits.calc_z(t, threshold_tp, 0) / t
-        const double lambda_term = lambda(t, power_of<2>(_mB), power_of<2>(_mV)) / _traits.calc_z(t, threshold_tp, _traits.tm());
+        const double lambda_term = (kinematic_tp - t) * power_of<2>(std::sqrt(threshold_tp - t) + std::sqrt(threshold_tp - _traits.tm())); // simplification of lambda / z(t, threshold_tp, tm);
         const double sqrtjac = std::sqrt(4 * (1 + z) * (_traits.t0 - threshold_tp) / power_of<3>(z - 1)); // Abs[jacobian] = - jacobian
 
         return norm * sqrtjac * pow(lambda_term, 0.25 * m) * pow(invt, 0.5 * (p + n + 1.0));
@@ -144,58 +142,58 @@ namespace eos
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_v(const double & q2) const
     {
-        return _phi(q2, _traits.tp_v, Process_::chi_1m_v, -1, 0, 0, 6, 1, 2, 3);
+        return _phi(q2, _traits.tp_v, Process_::chi_1m_v, -1, 0, 0, 2, 1, 2, 3);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_a_0(const double & q2) const
     {
-        return _phi(q2, _traits.tp_a, Process_::chi_0m_a, 0, 0, 0, 4, 2, 1, 3);
+        return _phi(q2, _traits.tp_a, Process_::chi_0m_a, 0, 0, 0, 1, 2, 1, 3);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_a_1(const double & q2) const
     {
-        return _phi(q2, _traits.tp_a, Process_::chi_1p_a, 1, 0, 0, 6, 1, 2, 1);
+        return _phi(q2, _traits.tp_a, Process_::chi_1p_a, 1, 0, 0, 2, 1, 2, 1);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_a_12(const double & q2) const
     {
-        return _phi(q2, _traits.tp_a, Process_::chi_1p_a, 0, 0, 2, 3, 2, 2, 1);
+        return _phi(q2, _traits.tp_a, Process_::chi_1p_a, 0, 0, 2, 4, 2, 2, 1);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_t_1(const double & q2) const
     {
-        return _phi(q2, _traits.tp_v, Process_::chi_1m_t, 0, 0, 0, 6, 1, 3, 3);
+        return _phi(q2, _traits.tp_v, Process_::chi_1m_t, 0, 0, 0, 2, 1, 3, 3);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_t_2(const double & q2) const
     {
-        return _phi(q2, _traits.tp_a, Process_::chi_1p_t5, 1, 1, 0, 6, 1, 3, 1);
+        return _phi(q2, _traits.tp_a, Process_::chi_1p_t5, 1, 1, 0, 2, 1, 3, 1);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToV>::_phi_t_23(const double & q2) const
     {
-        return _phi(q2, _traits.tp_a, Process_::chi_1p_t5, -1, 0, 2, 12, 0, 3, 1);
+        return _phi(q2, _traits.tp_a, Process_::chi_1p_t5, -1, 0, 2, 1, 0, 3, 1);
     }
 
     template <typename Process_>
     double
     BFW2010FormFactors<Process_, PToV>::_a_A12_0() const
     {
-        const double x_A12 = this->_traits.calc_z(0.0, _traits.tp_a, power_of<2>(_traits.m_R_1p)) * this->_phi_a_12(0.0)
+        const double x_A12 = _phi_a_12(0.0) * (power_of<2>(_traits.m_R_1p) < _traits.tp_a ? _traits.calc_z(0.0, _traits.tp_a, power_of<2>(_traits.m_R_1p)) : 1.0)
                              * (power_of<2>(_mB) - power_of<2>(_mV)) / 8.0 / _mB / _mV;
-        const double x_A0  = this->_traits.calc_z(0.0, _traits.tp_a, power_of<2>(_traits.m_R_0m)) * this->_phi_a_0(0.0);
+        const double x_A0  = _phi_a_0(0.0) * (power_of<2>(_traits.m_R_0m) < _traits.tp_a ? _traits.calc_z(0.0, _traits.tp_a, power_of<2>(_traits.m_R_0m)) : 1.0);
         std::array<double, 5> a;
         a[0] = x_A12 * this->_a_A0[0];
         for (unsigned i = 1 ; i < a.size() ; ++i)
@@ -210,8 +208,8 @@ namespace eos
     double
     BFW2010FormFactors<Process_, PToV>::_a_T2_0() const
     {
-        const double x_T2 = this->_traits.calc_z(0.0, _traits.tp_a, power_of<2>(_traits.m_R_1p)) * this->_phi_t_2(0.0);
-        const double x_T1 = this->_traits.calc_z(0.0, _traits.tp_v, power_of<2>(_traits.m_R_1m)) * this->_phi_t_1(0.0);
+        const double x_T2 = _phi_t_2(0.0) * (power_of<2>(_traits.m_R_1p) < _traits.tp_a ? _traits.calc_z(0.0, _traits.tp_a, power_of<2>(_traits.m_R_1p)) : 1.0);
+        const double x_T1 = _phi_t_1(0.0) * (power_of<2>(_traits.m_R_1m) < _traits.tp_v ? _traits.calc_z(0.0, _traits.tp_v, power_of<2>(_traits.m_R_1m)) : 1.0);
         const auto polynomials_T2 = _traits.orthonormal_polynomials_a(_traits.calc_z(0.0, _traits.tp_a, _traits.t0));
         const auto polynomials_T1 = _traits.orthonormal_polynomials_v(_traits.calc_z(0.0, _traits.tp_v, _traits.t0));
 
@@ -226,12 +224,44 @@ namespace eos
 
     template <typename Process_>
     double
+    BFW2010FormFactors<Process_, PToV>::_a_A1_0() const
+    {
+        const double x_A1  = _phi_a_1( _traits.tm()) * 16.0 * _mB * _mV * _mV / (_mB + _mV) / (_mB * _mB - _mV * _mV - _traits.tm());
+        const double x_A12 = _phi_a_12(_traits.tm());
+        std::array<double, 5> a;
+        a[0] = x_A1 * this->_a_A12_0();
+        for (unsigned i = 1 ; i < a.size() ; ++i)
+        {
+            a[i] = x_A1 * this->_a_A12[i - 1] - x_A12 * this->_a_A1[i - 1];
+        }
+        const auto polynomials = _traits.orthonormal_polynomials_a(_traits.calc_z(_traits.tm(), _traits.tp_a, _traits.t0));
+        return std::inner_product(a.begin(), a.end(), polynomials.begin(), 0.0) / (polynomials[0] * x_A12);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::_a_T23_0() const
+    {
+        const double x_T23 = _phi_t_23(_traits.tm()) * (_mB + _mV) * (_mB * _mB + 3 * _mV * _mV - _traits.tm()) / 8.0 / _mB / _mV / _mV;
+        const double x_T2  = _phi_t_2( _traits.tm());
+        std::array<double, 5> a;
+        a[0] = x_T23 * this->_a_T2_0();
+        for (unsigned i = 1 ; i < a.size() ; ++i)
+        {
+            a[i] = x_T23 * this->_a_T2[i - 1] - x_T2 * this->_a_T23[i - 1];
+        }
+        const auto polynomials = _traits.orthonormal_polynomials_a(_traits.calc_z(_traits.tm(), _traits.tp_a, _traits.t0));
+        return std::inner_product(a.begin(), a.end(), polynomials.begin(), 0.0) / (polynomials[0] * x_T2);
+    }
+
+    template <typename Process_>
+    double
     BFW2010FormFactors<Process_, PToV>::v(const double & q2) const
     {
         std::array<double, 5> coefficients;
         std::copy(_a_V.begin(), _a_V.end(), coefficients.begin());
         // resonances for 1^m
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_v, power_of<2>(_traits.m_R_1m));
+        const double blaschke     = (power_of<2>(_traits.m_R_1m) < _traits.tp_v ? _traits.calc_z(q2, _traits.tp_v, power_of<2>(_traits.m_R_1m)) : 1.0);
         const double phi          = _phi_v(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_v, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_v(z);
@@ -247,7 +277,7 @@ namespace eos
         std::array<double, 5> coefficients;
         std::copy(_a_A0.begin(), _a_A0.end(), coefficients.begin());
         // resonances for 0^m
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_0m));
+        const double blaschke     = (power_of<2>(_traits.m_R_0m) < _traits.tp_a ? _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_0m)) : 1.0);
         const double phi          = _phi_a_0(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_a, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_a(z);
@@ -261,9 +291,10 @@ namespace eos
     BFW2010FormFactors<Process_, PToV>::a_1(const double & q2) const
     {
         std::array<double, 5> coefficients;
-        std::copy(_a_A1.begin(), _a_A1.end(), coefficients.begin());
+        coefficients[0] = _a_A1_0();
+        std::copy(_a_A1.begin(), _a_A1.end(), coefficients.begin() + 1);
         // resonances for 1^p
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p));
+        const double blaschke     = (power_of<2>(_traits.m_R_1p) < _traits.tp_a ? _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p)) : 1.0);
         const double phi          = _phi_a_1(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_a, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_a(z);
@@ -280,7 +311,7 @@ namespace eos
         coefficients[0] = _a_A12_0();
         std::copy(_a_A12.begin(), _a_A12.end(), coefficients.begin() + 1);
         // resonances for 1^p
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p));
+        const double blaschke     = (power_of<2>(_traits.m_R_1p) < _traits.tp_a ? _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p)) : 1.0);
         const double phi          = _phi_a_12(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_a, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_a(z);
@@ -296,7 +327,7 @@ namespace eos
         std::array<double, 5> coefficients;
         std::copy(_a_T1.begin(), _a_T1.end(), coefficients.begin());
         // resonances for T (1^m state)
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_v, power_of<2>(_traits.m_R_1m));
+        const double blaschke     = (power_of<2>(_traits.m_R_1m) < _traits.tp_v ? _traits.calc_z(q2, _traits.tp_v, power_of<2>(_traits.m_R_1m)) : 1.0);
         const double phi          = _phi_t_1(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_v, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_v(z);
@@ -313,7 +344,7 @@ namespace eos
         coefficients[0] = _a_T2_0();
         std::copy(_a_T2.begin(), _a_T2.end(), coefficients.begin() + 1);
         // resonances for T5 (1^p state)
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p));
+        const double blaschke     = (power_of<2>(_traits.m_R_1p) < _traits.tp_a ? _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p)) : 1.0);
         const double phi          = _phi_t_2(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_a, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_a(z);
@@ -327,9 +358,10 @@ namespace eos
     BFW2010FormFactors<Process_, PToV>::t_23(const double & q2) const
     {
         std::array<double, 5> coefficients;
-        std::copy(_a_T23.begin(), _a_T23.end(), coefficients.begin());
+        coefficients[0] = _a_T23_0();
+        std::copy(_a_T23.begin(), _a_T23.end(), coefficients.begin() + 1);
         // resonances for T (1^p state)
-        const double blaschke     = _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p));
+        const double blaschke     = (power_of<2>(_traits.m_R_1p) < _traits.tp_a ? _traits.calc_z(q2, _traits.tp_a, power_of<2>(_traits.m_R_1p)) : 1.0);
         const double phi          = _phi_t_23(q2);
         const double z            = _traits.calc_z(q2, _traits.tp_a, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials_a(z);
@@ -419,13 +451,6 @@ namespace eos
 
     template<typename Process_>
     double
-    BFW2010FormFactors<Process_, PToV>::saturation_1m_v() const
-    {
-        return std::inner_product(_a_V.begin(), _a_V.end(), _a_V.begin(), 0.0);
-    }
-
-    template<typename Process_>
-    double
     BFW2010FormFactors<Process_, PToV>::saturation_0m_a() const
     {
         return std::inner_product(_a_A0.begin(), _a_A0.end(), _a_A0.begin(), 0.0);
@@ -433,33 +458,126 @@ namespace eos
 
     template<typename Process_>
     double
-    BFW2010FormFactors<Process_, PToV>::saturation_1p_a() const
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_v_0() const
+    {
+        return 0.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_v_perp() const
+    {
+        return std::inner_product(_a_V.begin(), _a_V.end(), _a_V.begin(), 0.0);
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_v_para() const
+    {
+        return 0.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_v() const
+    {
+        // By convention, the sum is divided by 3 to follow the bound saturation < 1.0
+        return (saturation_1m_v_0() + saturation_1m_v_perp() + saturation_1m_v_para()) / 3.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_a_0() const
     {
         std::array<double, 5> coefficients_A12;
         coefficients_A12[0] = _a_A12_0();
         std::copy(_a_A12.begin(), _a_A12.end(), coefficients_A12.begin() + 1);
 
-        return std::inner_product(coefficients_A12.begin(), coefficients_A12.end(), coefficients_A12.begin(), 0.0)
-             + std::inner_product(_a_A1.begin(), _a_A1.end(), _a_A1.begin(), 0.0);
+        return std::inner_product(coefficients_A12.begin(), coefficients_A12.end(), coefficients_A12.begin(), 0.0);
     }
 
     template<typename Process_>
     double
-    BFW2010FormFactors<Process_, PToV>::saturation_1m_t() const
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_a_perp() const
+    {
+        return 0.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_a_para() const
+    {
+        return std::inner_product(_a_A1.begin(), _a_A1.end(), _a_A1.begin(), 0.0);
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_a() const
+    {
+        // By convention, the sum is divided by 3 to follow the bound saturation < 1.0
+        return (saturation_1p_a_0() + saturation_1p_a_perp() + saturation_1p_a_para()) / 3.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_t_0() const
+    {
+        return 0.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_t_perp() const
     {
         return std::inner_product(_a_T1.begin(), _a_T1.end(), _a_T1.begin(), 0.0);
     }
 
     template<typename Process_>
     double
-    BFW2010FormFactors<Process_, PToV>::saturation_1p_t5() const
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_t_para() const
+    {
+        return 0.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1m_t() const
+    {
+        // By convention, the sum is divided by 3 to follow the bound saturation < 1.0
+        return (saturation_1m_t_0() + saturation_1m_t_perp() + saturation_1m_t_para()) / 3.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_t5_0() const
+    {
+        return std::inner_product(_a_T23.begin(), _a_T23.end(), _a_T23.begin(), 0.0);
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_t5_perp() const
+    {
+        return 0.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_t5_para() const
     {
         std::array<double, 5> coefficients_T2;
         coefficients_T2[0] = _a_T2_0();
         std::copy(_a_T2.begin(), _a_T2.end(), coefficients_T2.begin() + 1);
 
-        return std::inner_product(coefficients_T2.begin(), coefficients_T2.end(), coefficients_T2.begin(), 0.0)
-             + std::inner_product(_a_T23.begin(), _a_T23.end(), _a_T23.begin(), 0.0);
+        return std::inner_product(coefficients_T2.begin(), coefficients_T2.end(), coefficients_T2.begin(), 0.0);
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToV>::saturation_1p_t5() const
+    {
+        // By convention, the sum is divided by 3 to follow the bound saturation < 1.0
+        return (saturation_1p_t5_0() + saturation_1p_t5_perp() + saturation_1p_t5_para()) / 3.0;
     }
 
     template <typename Process_>
@@ -521,7 +639,6 @@ namespace eos
             results.add({ _phi_t_23(-2.0),  "phi_t_23(z = z(q2 = -2.0))" });
             results.add({ _phi_t_23( 1.0),  "phi_t_23(z = z(q2 =  1.0))" });
             results.add({ _phi_t_23( 4.0),  "phi_t_23(z = z(q2 =  4.0))" });
-
         }
 
         return results;
@@ -616,57 +733,58 @@ namespace eos
 
     template<typename Process_>
     double
-    BFW2010FormFactors<Process_, PToP>::_phi(const double & t, const double & t_p, const double & chi,
+    BFW2010FormFactors<Process_, PToP>::_phi(const double & t, const double & threshold_tp, const double & chi,
                                              const int & A, const unsigned B, const unsigned C, const unsigned k,
                                              const unsigned p, const unsigned n, const unsigned m) const
     {
         // [GRvDV:2022B]
-        const double z = _traits.calc_z(t, t_p, _traits.t0);
-        const double norm = std::sqrt(Process_::eta * pow(_traits.tp(), A) * pow(_traits.tm(), B)
-                                * pow(4 * _mB * _mP, C) / 8 / k / M_PI / M_PI / chi);
+        const double z = _traits.calc_z(t, threshold_tp, _traits.t0),
+            kinematic_tp = power_of<2>(_mB + _mP);
+        const double norm = std::sqrt(Process_::eta * pow(kinematic_tp, A) * pow(_traits.tm(), B)
+                                * pow(4 * _mB * _mP, C) / 32 / k / M_PI / M_PI / chi);
 
         // set Q^2 to 0
-        const double invt = 1 / ( 2.0 * (std::sqrt(t_p) * std::sqrt(t_p - t) + t_p) - t); // simplification of -_z(t, t_p, 0) / t
-        const double lambda_term = lambda(t, power_of<2>(_mB), power_of<2>(_mP)) / _traits.calc_z(t, t_p, _traits.tm());
-        const double sqrtjac = std::sqrt(4 * (1 + z) * (_traits.t0 - t_p) / power_of<3>(z - 1)); // Abs[jacobian] = - jacobian
+        const double invt = 1 / ( 2.0 * (std::sqrt(threshold_tp) * std::sqrt(threshold_tp - t) + threshold_tp) - t); // simplification of -_z(t, t_p, 0) / t
+        const double lambda_term = (kinematic_tp - t) * power_of<2>(std::sqrt(threshold_tp - t) + std::sqrt(threshold_tp - _traits.tm())); // simplification of lambda / z(t, threshold_tp, tm);
+        const double sqrtjac = std::sqrt(4 * (1 + z) * (_traits.t0 - threshold_tp) / power_of<3>(z - 1)); // Abs[jacobian] = - jacobian
 
-        return norm * pow(lambda_term, 0.25 * m) * pow(invt, 0.5 * (p + n + 1.0)) * sqrtjac;
+        return norm * sqrtjac * pow(lambda_term, 0.25 * m) * pow(invt, 0.5 * (p + n + 1.0));
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToP>::_phi_f_p(const double & q2) const
     {
-        return _phi(q2, _traits.tp(), Process_::chi_1m_v, 0, 0, 0, 12, 2, 2, 3);
+        return _phi(q2, _traits.tp, Process_::chi_1m_v, 0, 0, 0, 1, 2, 2, 3);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToP>::_phi_f_0(const double & q2) const
     {
-        return _phi(q2, _traits.tp(), Process_::chi_0p_v, 1, 1, 0, 4, 2, 1, 1);
+        return _phi(q2, _traits.tp, Process_::chi_0p_v, 1, 1, 0, 1, 2, 1, 1);
     }
 
     template<typename Process_>
     inline double
     BFW2010FormFactors<Process_, PToP>::_phi_f_t(const double & q2) const
     {
-        return _phi(q2, _traits.tp(), Process_::chi_1m_t, -1, 0, 0, 12, 0, 3, 3);
+        return _phi(q2, _traits.tp, Process_::chi_1m_t, -1, 0, 0, 1, 0, 3, 3);
     }
 
     template <typename Process_>
     double
     BFW2010FormFactors<Process_, PToP>::_a_f0_0() const
     {
-        const double x_f0 = this->_traits.calc_z(0.0, _traits.tp(), power_of<2>(_traits.m_R_0p)) * this->_phi_f_0(0.0);
-        const double x_fp = this->_traits.calc_z(0.0, _traits.tp(), power_of<2>(_traits.m_R_1m)) * this->_phi_f_p(0.0);
+        const double x_f0 = _phi_f_0(0.0) * (power_of<2>(_traits.m_R_0p) < _traits.tp ? _traits.calc_z(0.0, _traits.tp, power_of<2>(_traits.m_R_0p)) : 1.0);
+        const double x_fp = _phi_f_p(0.0) * (power_of<2>(_traits.m_R_1m) < _traits.tp ? _traits.calc_z(0.0, _traits.tp, power_of<2>(_traits.m_R_1m)) : 1.0);
         std::array<double, 5> a;
         a[0] = x_f0 * this->_a_fp[0];
         for (unsigned i = 1 ; i < a.size() ; ++i)
         {
             a[i] = x_f0 * this->_a_fp[i] - x_fp * this->_a_f0[i - 1];
         }
-        const auto polynomials = _traits.orthonormal_polynomials(_traits.calc_z(0.0, _traits.tp(), _traits.t0));
+        const auto polynomials = _traits.orthonormal_polynomials(_traits.calc_z(0.0, _traits.tp, _traits.t0));
         return std::inner_product(a.begin(), a.end(), polynomials.begin(), 0.0) / (polynomials[0] * x_fp);
     }
 
@@ -677,9 +795,9 @@ namespace eos
         std::array<double, 5> coefficients;
         std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
         // resonances for 1^m
-        const double blaschke     = _traits.calc_z(q2, _traits.tp(), power_of<2>(_traits.m_R_1m));
+        const double blaschke = (power_of<2>(_traits.m_R_1m) < _traits.tp ? _traits.calc_z(q2, _traits.tp, power_of<2>(_traits.m_R_1m)) : 1.0);
         const double phi          = _phi_f_p(q2);
-        const double z            = _traits.calc_z(q2, _traits.tp(), _traits.t0);
+        const double z            = _traits.calc_z(q2, _traits.tp, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials(z);
         const double series       = std::inner_product(coefficients.begin(), coefficients.end(), polynomials.begin(), 0.0);
 
@@ -694,9 +812,9 @@ namespace eos
         coefficients[0] = _a_f0_0();
         std::copy(_a_f0.begin(), _a_f0.end(), coefficients.begin() + 1);
         // resonances for 0^p
-        const double blaschke     = _traits.calc_z(q2, _traits.tp(), power_of<2>(_traits.m_R_0p));
+        const double blaschke = (power_of<2>(_traits.m_R_0p) < _traits.tp ? _traits.calc_z(q2, _traits.tp, power_of<2>(_traits.m_R_0p)) : 1.0);
         const double phi          = _phi_f_0(q2);
-        const double z            = _traits.calc_z(q2, _traits.tp(), _traits.t0);
+        const double z            = _traits.calc_z(q2, _traits.tp, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials(z);
         const double series       = std::inner_product(coefficients.begin(), coefficients.end(), polynomials.begin(), 0.0);
 
@@ -710,13 +828,91 @@ namespace eos
         std::array<double, 5> coefficients;
         std::copy(_a_ft.begin(), _a_ft.end(), coefficients.begin());
         // resonances for 1^m
-        const double blaschke     = _traits.calc_z(q2, _traits.tp(), power_of<2>(_traits.m_R_1m));
+        const double blaschke = (power_of<2>(_traits.m_R_1m) < _traits.tp ? _traits.calc_z(q2, _traits.tp, power_of<2>(_traits.m_R_1m)) : 1.0);
         const double phi          = _phi_f_t(q2);
-        const double z            = _traits.calc_z(q2, _traits.tp(), _traits.t0);
+        const double z            = _traits.calc_z(q2, _traits.tp, _traits.t0);
         const auto   polynomials  = _traits.orthonormal_polynomials(z);
         const double series       = std::inner_product(coefficients.begin(), coefficients.end(), polynomials.begin(), 0.0);
 
         return series / phi / blaschke;
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::f_p_series(const double & q2) const
+    {
+        std::array<complex<double>, 5> coefficients;
+        std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
+        const complex<double> z      = this->_traits.calc_z(complex<double>(q2, 0.0), complex<double>(_traits.tp, 0.0), complex<double>(_traits.t0, 0.0));
+        const auto polynomials       = _traits.orthonormal_polynomials(z);
+        const complex<double> series = std::inner_product(coefficients.begin(), coefficients.end(), polynomials.begin(), complex<double>(0.0, 0.0));
+
+        return abs(series);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::f_p_series_prime(const double & q2) const
+    {
+        std::array<complex<double>, 5> coefficients;
+        std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
+        const complex<double> z      = this->_traits.calc_z(complex<double>(q2, 0.0), complex<double>(_traits.tp, 0.0), complex<double>(_traits.t0, 0.0));
+        const auto polynomials_prime = _traits.orthonormal_polynomials_derivatives(z);
+        const complex<double> series_prime = std::inner_product(coefficients.begin(), coefficients.end(), polynomials_prime.begin(), complex<double>(0.0, 0.0));
+
+        return abs(series_prime);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::f_0_series(const double & q2) const
+    {
+        std::array<complex<double>, 5> coefficients;
+        std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
+        const complex<double> z      = this->_traits.calc_z(complex<double>(q2, 0.0), complex<double>(_traits.tp, 0.0), complex<double>(_traits.t0, 0.0));
+        const auto polynomials       = _traits.orthonormal_polynomials(z);
+        const complex<double> series = std::inner_product(coefficients.begin(), coefficients.end(), polynomials.begin(), complex<double>(0.0, 0.0));
+
+        return abs(series);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::f_0_series_prime(const double & q2) const
+    {
+        std::array<complex<double>, 5> coefficients;
+        std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
+        const complex<double> z      = this->_traits.calc_z(complex<double>(q2, 0.0), complex<double>(_traits.tp, 0.0), complex<double>(_traits.t0, 0.0));
+        const auto polynomials_prime = _traits.orthonormal_polynomials_derivatives(z);
+        const complex<double> series_prime = std::inner_product(coefficients.begin(), coefficients.end(), polynomials_prime.begin(), complex<double>(0.0, 0.0));
+
+        return abs(series_prime);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::f_t_series(const double & q2) const
+    {
+        std::array<complex<double>, 5> coefficients;
+        std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
+        const complex<double> z      = this->_traits.calc_z(complex<double>(q2, 0.0), complex<double>(_traits.tp, 0.0), complex<double>(_traits.t0, 0.0));
+        const auto polynomials       = _traits.orthonormal_polynomials(z);
+        const complex<double> series = std::inner_product(coefficients.begin(), coefficients.end(), polynomials.begin(), complex<double>(0.0, 0.0));
+
+        return abs(series);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::f_t_series_prime(const double & q2) const
+    {
+        std::array<complex<double>, 5> coefficients;
+        std::copy(_a_fp.begin(), _a_fp.end(), coefficients.begin());
+        const complex<double> z      = this->_traits.calc_z(complex<double>(q2, 0.0), complex<double>(_traits.tp, 0.0), complex<double>(_traits.t0, 0.0));
+        const auto polynomials_prime = _traits.orthonormal_polynomials_derivatives(z);
+        const complex<double> series_prime = std::inner_product(coefficients.begin(), coefficients.end(), polynomials_prime.begin(), complex<double>(0.0, 0.0));
+
+        return abs(series_prime);
     }
 
     template <typename Process_>
@@ -737,16 +933,59 @@ namespace eos
         return std::inner_product(coefficients.begin(), coefficients.end(), coefficients.begin(), 0.0);
     }
 
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_0m_a() const
+    {
+        return 0.;
+    }
+
     template <typename Process_>
     double
-    BFW2010FormFactors<Process_, PToP>::saturation_1m_v() const
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_v_0() const
     {
         return std::inner_product(_a_fp.begin(), _a_fp.end(), _a_fp.begin(), 0.0);
     }
 
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_v_perp() const
+    {
+        return 0.0;
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_v_para() const
+    {
+        return 0.0;
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_v() const
+    {
+        // By convention, the sum is divided by 3 to follow the bound saturation < 1.0
+        return (saturation_1m_v_0() + saturation_1m_v_perp() + saturation_1m_v_para()) / 3.0;
+    }
+
     template<typename Process_>
     double
-    BFW2010FormFactors<Process_, PToP>::saturation_0m_a() const
+    BFW2010FormFactors<Process_, PToP>::saturation_1p_a_0() const
+    {
+        return 0.;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1p_a_perp() const
+    {
+        return 0.;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1p_a_para() const
     {
         return 0.;
     }
@@ -760,9 +999,52 @@ namespace eos
 
     template <typename Process_>
     double
-    BFW2010FormFactors<Process_, PToP>::saturation_1m_t() const
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_t_0() const
     {
         return std::inner_product(_a_ft.begin(), _a_ft.end(), _a_ft.begin(), 0.0);
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_t_perp() const
+    {
+        return 0.0;
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_t_para() const
+    {
+        return 0.0;
+    }
+
+    template <typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1m_t() const
+    {
+        // By convention, the sum is divided by 3 to follow the bound saturation < 1.0
+        return (saturation_1m_t_0() + saturation_1m_t_perp() + saturation_1m_t_para()) / 3.0;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1p_t5_0() const
+    {
+        return 0.;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1p_t5_perp() const
+    {
+        return 0.;
+    }
+
+    template<typename Process_>
+    double
+    BFW2010FormFactors<Process_, PToP>::saturation_1p_t5_para() const
+    {
+        return 0.;
     }
 
     template<typename Process_>
@@ -778,8 +1060,8 @@ namespace eos
     {
         Diagnostics results;
 
-        results.add({ _traits.calc_z(0.0,  _traits.tp(), _traits.t0), "z(q2 =  0)" });
-        results.add({ _traits.calc_z(10.0, _traits.tp(), _traits.t0), "z(q2 = 10)" });
+        results.add({ _traits.calc_z(0.0,  _traits.tp, _traits.t0), "z(q2 =  0)" });
+        results.add({ _traits.calc_z(10.0, _traits.tp, _traits.t0), "z(q2 = 10)" });
 
         {
             const auto & [p0, p1, p2, p3, p4, p5] = _traits.orthonormal_polynomials(0.0);
@@ -788,7 +1070,7 @@ namespace eos
         }
 
         {
-            const auto & [p0, p1, p2, p3, p4, p5] = _traits.orthonormal_polynomials(_traits.calc_z(10.0, _traits.tp(),_traits.t0));
+            const auto & [p0, p1, p2, p3, p4, p5] = _traits.orthonormal_polynomials(_traits.calc_z(10.0, _traits.tp,_traits.t0));
             results.add({ p0,              "p_0(z = z(q2 = 10))" });
             results.add({ p1,              "p_1(z = z(q2 = 10))" });
         }

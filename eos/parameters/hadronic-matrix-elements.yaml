@@ -399,6 +399,13 @@ groups:
           matrix:
             - ["f+", "f0", "fT"]
             - [0, 1, 2, 3, 4]
+      'B->K::tp@BFW2010' :
+          central:  33.304441
+          min:      33.304441
+          max:      33.304441
+          latex:    '$t_+^{B\to K^*}$'
+          comment:  '(mB + mK)^2'
+          unit:     'GeV'
       'B->K::t0@BFW2010' :
           central:  14.7
           min:      14.7
@@ -1373,7 +1380,7 @@ groups:
           max:     +1.8831160249369858
           latex:    '$\alpha_{T_{23},2}^{B \to K^*,\mathrm{BSZ2015}}$'
           unit:     '1'
-      # form factor parameters for B_s->phi for [BFW:2010A] parametrization
+      # form factor parameters for B->K^* for [BFW:2010A] parametrization
       'B->K^*::a^%1%_%2%@BFW2010' :
           central:  0.
           min:     -1.0
@@ -2582,7 +2589,7 @@ groups:
   - title: 'Parameters in LCSR Calculations with Light-Meson LCDAs'
     description: ''
     parameters:
-      # form factor parameters for LCSR calculation according to [DKMMO:2008A]
+      # B->pi form factor parameters for LCSR calculation according to [DKMMO:2008A]
       'B->pi::zeta(NNLO)@DKMMO2008' :
           central: 0.0
           min:     -1.0
@@ -2674,6 +2681,104 @@ groups:
           comments: 'cf. [DKMMO:2008A]'
           latex:    "$s_0''^{f_T}(q^2 = 0)$"
       'B->pi::sp_0^B@DKMMO2008' :
+          central: +35.6
+          min:     +35.5
+          max:     +36.0
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    '$s_0^{f_B}$'
+      # B_s->K form factor parameters for LCSR calculation using the [DKMMO:2008A] code, with [DM:2008A] adjustments
+      'B_s->K::zeta(NNLO)@DKMMO2008' :
+          central: 0.0
+          min:     -1.0
+          max:     +1.0
+          unit:     '1'
+          latex:    '$\zeta\mathrm{(NNLO)}$'
+      'B_s->K::M^2@DKMMO2008' :
+          central: +16.0
+          min:     +15.0
+          max:     +20.0
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    '$M^2\,\mathrm{(LCSR)}$'
+      'B_s->K::Mp^2@DKMMO2008' :
+          central: +5.0
+          min:     +5.0
+          max:     +5.0
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    '$M^2\,\mathrm{(SVZSR)}$'
+      'B_s->K::mu@DKMMO2008' :
+          central: +3.0
+          min:     +3.0
+          max:     +3.0
+          unit:     'GeV'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    '$\mu^{B_s \to K,\mathrm{DKMMO2008}}$'
+      'B_s->K::s_0^+(0)@DKMMO2008' :
+          central: +35.75
+          min:     +35.75
+          max:     +35.75
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    '$s_0^{f_+}(q^2 = 0)$'
+      "B_s->K::s_0^+'(0)@DKMMO2008" :
+          central:   0.00
+          min:     -10.00
+          max:     +10.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0'^{f_+}(q^2 = 0)$"
+      "B_s->K::s_0^+''(0)@DKMMO2008" :
+          central:   0.00
+          min:     -10.00
+          max:     +10.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0''^{f_+}(q^2 = 0)$"
+      "B_s->K::s_0^0(0)@DKMMO2008" :
+          central: +36.00
+          min:     +36.00
+          max:     +36.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0^{f_0}(q^2 = 0)$"
+      "B_s->K::s_0^0'(0)@DKMMO2008" :
+          central:   0.00
+          min:     -10.00
+          max:     +10.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0'^{f_0}(q^2 = 0)$"
+      "B_s->K::s_0^0''(0)@DKMMO2008" :
+          central:   0.00
+          min:     -10.00
+          max:     +10.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0''^{f_0}(q^2 = 0)$"
+      'B_s->K::s_0^T(0)@DKMMO2008' :
+          central: +35.75
+          min:     +35.75
+          max:     +35.75
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    '$s_0^{f_T}(q^2 = 0)$'
+      "B_s->K::s_0^T'(0)@DKMMO2008" :
+          central:   0.00
+          min:     -10.00
+          max:     +10.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0'^{f_T}(q^2 = 0)$"
+      "B_s->K::s_0^T''(0)@DKMMO2008" :
+          central:   0.00
+          min:     -10.00
+          max:     +10.00
+          unit:     'GeV^2'
+          comments: 'cf. [DKMMO:2008A]'
+          latex:    "$s_0''^{f_T}(q^2 = 0)$"
+      'B_s->K::sp_0^B@DKMMO2008' :
           central: +35.6
           min:     +35.5
           max:     +36.0
@@ -3535,7 +3640,7 @@ groups:
   - title: 'Dispersive bounds in the OPE for b -> s currents'
     description: ''
     parameters:
-      # [BFW:2010A] using a reference masse mb = 4.2 GeV
+      # [BFW:2010A] using a reference mass mb = 4.2 GeV
       'b->s::chiOPE[0^+_V]' :
           central:  1.42e-02
           min:      1.42e-02
@@ -4804,103 +4909,202 @@ groups:
           max:     +0.1
           latex:    '$\delta\mathcal{B}(b\to sc\bar{c})$'
           comments: 'Uncertainty of the normalized dispersive bound'
-      'B->K^*ccbar::%1%{alpha_%2%^%3%}@GvDV2020' :
+      'B->K^*ccbar::%1%{alpha_%2%^perp}@GvDV2020' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{%1%}\, \alpha_{\%3%,%2%}^{B\to K^*c\bar{c}}$'
+          latex:   '$\mathrm{%1%}\, \alpha_{\perp,%2%}^{B\to K^*c\bar{c}}$'
           matrix:
               - [ "Re", "Im" ]
               - [ "0", "1", "2", "3", "4", "5" ]
-              - [ "perp", "para", "long"]
-      'B->K^*ccbar::%1%_Hhat_at_%2%_%3%@GRvDV2022' :
+      'B->K^*ccbar::%1%{alpha_%2%^para}@GvDV2020' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\%3%^{B\to K^*c\bar{c}}(%2%)$'
-          matrix:
-              - [ "Re", "Im" ]
-              - [ "m7", "m5", "m3", "m1", "t0" ]
-              - [ "perp", "para", "long"]
-      'B->K^*ccbar::A%1%_Hhat_at_%2%_%3%@GRvDV2022' :
-          central: 0
-          min:     0
-          max:     0
-          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\%3%^{B\to K^*c\bar{c}}(%2%)$'
-          matrix:
-              - [ "bs", "rg" ]
-              - [ "Jpsi", "psi2S" ]
-              - [ "perp", "para", "long"]
-      'B->K^*ccbar::Arg_Hhat_at_%1%_%2%@GRvDV2022' :
-          central: 0
-          min:     0
-          max:     0
-          latex:   '$\mathrm{Arg}\, \hat{\mathcal{H}}_\%2%^{B\to K^*c\bar{c}}(%1%)$'
-          matrix:
-              - [ "Jpsi", "psi2S" ]
-              - [ "perp_minus_long", "para_minus_long" ]
-      'B_s->phiccbar::%1%{alpha_%2%^%3%}@GvDV2020' :
-          central: 0
-          min:     0
-          max:     0
-          latex:   '$\mathrm{%1%}\, \alpha_{\%3%,%2%}^{B_s\to \phi c\bar{c}}$'
+          latex:   '$\mathrm{%1%}\, \alpha_{\parallel,%2%}^{B\to K^*c\bar{c}}$'
           matrix:
               - [ "Re", "Im" ]
               - [ "0", "1", "2", "3", "4", "5" ]
-              - [ "perp", "para", "long"]
-      'B_s->phiccbar::%1%_Hhat_at_%2%_%3%@GRvDV2022' :
+      'B->K^*ccbar::%1%{alpha_%2%^long}@GvDV2020' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\%3%^{B_s\to \phi c\bar{c}}(%2%)$'
+          latex:   '$\mathrm{%1%}\, \alpha_{0,%2%}^{B\to K^*c\bar{c}}$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "0", "1", "2", "3", "4", "5" ]
+      'B->K^*ccbar::%1%_Hhat_at_%2%_perp@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\perp^{B\to K^*c\bar{c}}(%2%)$'
           matrix:
               - [ "Re", "Im" ]
               - [ "m7", "m5", "m3", "m1", "t0" ]
-              - [ "perp", "para", "long"]
-      'B_s->phiccbar::A%1%_Hhat_at_%2%_%3%@GRvDV2022' :
+      'B->K^*ccbar::%1%_Hhat_at_%2%_para@GRvDV2022' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\%3%^{B_s\to \phi c\bar{c}}(%2%)$'
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\parallel^{B\to K^*c\bar{c}}(%2%)$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "m7", "m5", "m3", "m1", "t0" ]
+      'B->K^*ccbar::%1%_Hhat_at_%2%_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_0^{B\to K^*c\bar{c}}(%2%)$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "m7", "m5", "m3", "m1", "t0" ]
+      'B->K^*ccbar::A%1%_Hhat_at_%2%_perp@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\perp^{B\to K^*c\bar{c}}(%2%)$'
           matrix:
               - [ "bs", "rg" ]
               - [ "Jpsi", "psi2S" ]
-              - [ "perp", "para", "long"]
-      'B_s->phiccbar::Arg_Hhat_at_%1%_%2%@GRvDV2022' :
+      'B->K^*ccbar::A%1%_Hhat_at_%2%_para@GRvDV2022' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{Arg}\, \hat{\mathcal{H}}_\%2%^{B_s\to phic\bar{c}}(%1%)$'
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\parallel^{B\to K^*c\bar{c}}(%2%)$'
+          matrix:
+              - [ "bs", "rg" ]
+              - [ "Jpsi", "psi2S" ]
+      'B->K^*ccbar::A%1%_Hhat_at_%2%_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_0^{B\to K^*c\bar{c}}(%2%)$'
+          matrix:
+              - [ "bs", "rg" ]
+              - [ "Jpsi", "psi2S" ]
+      'B->K^*ccbar::Arg_Hhat_at_%1%_perp_minus_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{Arg}\, \hat{\mathcal{H}}_{\perp 0}^{B\to K^*c\bar{c}}(%1%)$'
           matrix:
               - [ "Jpsi", "psi2S" ]
-              - [ "perp_minus_long", "para_minus_long" ]
-      'B->Kccbar::%1%{alpha_%2%^%3%}@GvDV2020' :
+      'B->K^*ccbar::Arg_Hhat_at_%1%_para_minus_long@GRvDV2022' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{%1%}\, \alpha_{\%3%,%2%}^{B\to Kc\bar{c}}$'
+          latex:   '$\mathrm{Arg}\, \hat{\mathcal{H}}_{\parallel 0}^{B\to K^*c\bar{c}}(%1%)$'
+          matrix:
+              - [ "Jpsi", "psi2S" ]
+      'B_s->phiccbar::%1%{alpha_%2%^perp}@GvDV2020' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \alpha_{\perp,%2%}^{B_s\to \phi c\bar{c}}$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "0", "1", "2", "3", "4", "5" ]
+      'B_s->phiccbar::%1%{alpha_%2%^para}@GvDV2020' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \alpha_{\parallel,%2%}^{B_s\to \phi c\bar{c}}$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "0", "1", "2", "3", "4", "5" ]
+      'B_s->phiccbar::%1%{alpha_%2%^long}@GvDV2020' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \alpha_{0,%2%}^{B_s\to \phi c\bar{c}}$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "0", "1", "2", "3", "4", "5" ]
+      'B_s->phiccbar::%1%_Hhat_at_%2%_perp@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\perp^{B_s\to \phi c\bar{c}}(%2%)$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "m7", "m5", "m3", "m1", "t0" ]
+      'B_s->phiccbar::%1%_Hhat_at_%2%_para@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\parallel^{B_s\to \phi c\bar{c}}(%2%)$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "m7", "m5", "m3", "m1", "t0" ]
+      'B_s->phiccbar::%1%_Hhat_at_%2%_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_0^{B_s\to \phi c\bar{c}}(%2%)$'
+          matrix:
+              - [ "Re", "Im" ]
+              - [ "m7", "m5", "m3", "m1", "t0" ]
+      'B_s->phiccbar::A%1%_Hhat_at_%2%_perp@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\perp^{B_s\to \phi c\bar{c}}(%2%)$'
+          matrix:
+              - [ "bs", "rg" ]
+              - [ "Jpsi", "psi2S" ]
+      'B_s->phiccbar::A%1%_Hhat_at_%2%_para@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\parallel^{B_s\to \phi c\bar{c}}(%2%)$'
+          matrix:
+              - [ "bs", "rg" ]
+              - [ "Jpsi", "psi2S" ]
+      'B_s->phiccbar::A%1%_Hhat_at_%2%_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_0^{B_s\to \phi c\bar{c}}(%2%)$'
+          matrix:
+              - [ "bs", "rg" ]
+              - [ "Jpsi", "psi2S" ]
+      'B_s->phiccbar::Arg_Hhat_at_%1%_perp_minus_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{Arg}\, \hat{\mathcal{H}}_{\perp 0}^{B_s\to phic\bar{c}}(%1%)$'
+          matrix:
+              - [ "Jpsi", "psi2S" ]
+      'B_s->phiccbar::Arg_Hhat_at_%1%_para_minus_long@GRvDV2022' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{Arg}\, \hat{\mathcal{H}}_{\parallel 0}^{B_s\to phic\bar{c}}(%1%)$'
+          matrix:
+              - [ "Jpsi", "psi2S" ]
+      'B->Kccbar::%1%{alpha_%2%^plus}@GvDV2020' :
+          central: 0
+          min:     0
+          max:     0
+          latex:   '$\mathrm{%1%}\, \alpha_{+,%2%}^{B\to Kc\bar{c}}$'
           matrix:
               - [ "Re", "Im" ]
               - [ "0", "1", "2", "3", "4", "5", "6" ]
-              - [ "plus" ]
-      'B->Kccbar::%1%_Hhat_at_%2%_%3%@GRvDV2022' :
+      'B->Kccbar::%1%_Hhat_at_%2%_plus@GRvDV2022' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_\%3%^{B\to Kc\bar{c}}(%2%)$'
+          latex:   '$\mathrm{%1%}\, \hat{\mathcal{H}}_+^{B\to Kc\bar{c}}(%2%)$'
           matrix:
               - [ "Re", "Im" ]
               - [ "m7", "m5", "m3", "m1", "t0" ]
-              - [ "plus" ]
-      'B->Kccbar::A%1%_Hhat_at_%2%_%3%@GRvDV2022' :
+      'B->Kccbar::A%1%_Hhat_at_%2%_plus@GRvDV2022' :
           central: 0
           min:     0
           max:     0
-          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_\%3%^{B\to Kc\bar{c}}(%2%)$'
+          latex:   '$\mathrm{A%1%}\, \hat{\mathcal{H}}_+^{B\to Kc\bar{c}}(%2%)$'
           matrix:
               - [ "bs", "rg" ]
               - [ "Jpsi", "psi2S" ]
-              - [ "plus" ]
   # }}}
 
   # Miscellaneous Form Factor Parameters

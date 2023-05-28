@@ -124,6 +124,11 @@ class Analysis:
                         central - sigma_lo, central, central + sigma_hi
                     ),
                     False)
+            elif 'scale' == prior_type:
+                mu_0 = prior['mu_0']
+                lambda_scale = prior['lambda']
+                self._log_posterior.add(eos.LogPrior.Scale(self.parameters,
+                    parameter, eos.ParameterRange(minv, maxv), mu_0, lambda_scale), False)
             else:
                 raise ValueError('Unknown prior type \'{}\''.format(prior_type))
 
@@ -148,7 +153,7 @@ class Analysis:
             self._log_likelihood.add(constraint)
 
         # perform some sanity checks
-        varied_parameter_names = set([p.name() for p in self.varied_parameters])
+        varied_parameter_names = {p.name() for p in self.varied_parameters}
         used_parameter_names = set()
         fixed_parameter_names = set(fixed_parameters.keys())
         for observable in self._log_likelihood.observable_cache():
@@ -227,7 +232,7 @@ class Analysis:
 
 
     def optimize(self, start_point=None, rng=np.random.mtrand, **kwargs):
-        """
+        r"""
         Optimize the log(posterior) and returns a best-fit-point summary.
 
         :param start_point: Parameter point from which to start the optimization, with the elements in the same order as in eos.Analysis.varied_parameters.
@@ -283,9 +288,9 @@ class Analysis:
         try:
             return(self._log_posterior.evaluate())
         except RuntimeError as e:
-            error('encountered run time error ({e}) when evaluating log(posterior) in parameter point:'.format(e=e))
+            eos.error('encountered run time error ({e}) when evaluating log(posterior) in parameter point:'.format(e=e))
             for p in self.varied_parameters:
-                error(' - {n}: {v}'.format(n=p.name(), v=p.evaluate()))
+                eos.error(' - {n}: {v}'.format(n=p.name(), v=p.evaluate()))
             return(-np.inf)
 
 
@@ -596,7 +601,7 @@ class Analysis:
         return np.array([prior.inverse_cdf(p) for prior, p in zip(self._log_posterior.log_priors(), u)])
 
 
-    def sample_nested(self, bound='multi', nlive=250, dlogz=1.0, maxiter=None):
+    def sample_nested(self, bound='multi', nlive=250, dlogz=1.0, maxiter=None, seed=10):
         """
         Return samples of the parameters.
 
@@ -610,12 +615,14 @@ class Analysis:
         :type dlogz: float, optional
         :param maxiter: The maximum number of iterations. Iterations may stop earlier if the termination condition is reached.
         :type maxiter: int, optional
+        :param seed: The seed used to initialize the Mersenne Twister pseudo-random number generator.
+        :type seed: {None, int, array_like[ints], SeedSequence}, optional
 
         .. note::
            This method requires the dynesty python module, which can be installed from PyPI.
         """
         import dynesty
-        sampler = dynesty.DynamicNestedSampler(self.log_likelihood, self._prior_transform, len(self.varied_parameters), bound=bound, nlive=nlive)
+        sampler = dynesty.DynamicNestedSampler(self.log_likelihood, self._prior_transform, len(self.varied_parameters), bound=bound, nlive=nlive, rstate = np.random.Generator(np.random.MT19937(seed)))
         sampler.run_nested(dlogz_init=dlogz, maxiter=maxiter)
         return sampler.results
 

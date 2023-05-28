@@ -26,6 +26,7 @@
 #include <eos/utils/parameters.hh>
 #include <eos/utils/options.hh>
 #include <eos/utils/options-impl.hh>
+#include <eos/utils/reference-name.hh>
 
 #include <array>
 #include <string>
@@ -42,15 +43,20 @@ namespace eos
             public BMesonLCDAs
         {
             private:
-                SwitchOption opt_q;
-                SwitchOption opt_gminus;
+                const static unsigned int number_of_parameters = 9u;
+                using Weights = std::array<double, number_of_parameters>; // We implement the weights as fixed-size arrays
+
+                SpecifiedOption opt_q;
+                SpecifiedOption opt_gminus;
                 double switch_gminus;
 
                 UsedParameter mu_0;
                 UsedParameter omega_0;
-                std::array<UsedParameter, 9> a; // at the scale mu_0
+                std::array<UsedParameter, number_of_parameters> a; // at the scale mu_0
 
                 std::string parameter(const char * _name) const;
+
+                static const std::vector<OptionSpecification> options;
 
             public:
                 FLvD2022(const Parameters & parameters, const Options & options);
@@ -66,7 +72,7 @@ namespace eos
                 virtual std::tuple<BMesonLCDAs::CoefficientIterator, BMesonLCDAs::CoefficientIterator> coefficient_range(const double & mu) const final override;
 
                 /*!
-                 * Leading twist two-particle LCDAs
+                 * Leading twist two-particle LCDAs in momentum space
                  *
                  * omega: plus-component of the spectator momentum
                  */
@@ -74,6 +80,15 @@ namespace eos
                 virtual double phi_minus(const double & omega) const final override;
                 virtual double phi_bar(const double & omega) const final override;
                 virtual double phi_bar_d1(const double & omega) const final override;
+
+                /*!
+                 * Leading twist two-particle LCDAs in position space
+                 *
+                 * tau: minus-component of the spectator position on the negative imaginary axis: tau = -i*t
+                 */
+                double phitilde_plus(const double & tau, const double & mu) const;
+                double t_d_dt_phitilde_plus(const double & tau, const double & mu) const;
+                double t2_d2_d2t_phitilde_plus(const double & tau, const double & mu) const;
 
                 /*!
                  * Next-to-leading twist two-particle LCDAs
@@ -116,10 +131,16 @@ namespace eos
 
                 virtual double psi_bar_bar_4(const double & omega_1, const double & omega_2) const final override;
                 virtual double chi_bar_bar_4(const double & omega_1, const double & omega_2) const final override;
+
                 /*!
                 * Pseudo observables for the two-particle LCDAs
+                *
+                * The logarithmic moments are defined in [FLvD:2022A], Eq. (14) with mu_m_hat = omega_0 * exp(euler_gamma)
                 */
                 virtual double inverse_lambda_plus() const final override;
+                double inverse_moment(const double & mu) const;
+                double logarithmic_moment_1(const double & mu) const;
+                double logarithmic_moment_2(const double & mu) const;
 
                 /*!
                  * Leading power three-particle LCDAs
@@ -142,6 +163,17 @@ namespace eos
 
                 /* Internal diagnostics */
                 virtual Diagnostics diagnostics() const final override;
+
+                /*!
+                * References used in the computation of our (pseudo)observables.
+                */
+                static const std::set<ReferenceName> references;
+
+                /*!
+                * Options used in the computation of our (pseudo)observables.
+                */
+                static std::vector<OptionSpecification>::const_iterator begin_options();
+                static std::vector<OptionSpecification>::const_iterator end_options();
         };
     }
 }

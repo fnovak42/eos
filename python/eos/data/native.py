@@ -18,6 +18,7 @@ import os
 import numpy as _np
 import pypmc
 import yaml
+import dynesty
 from scipy.special import erf
 from scipy.linalg import block_diag
 
@@ -35,7 +36,7 @@ class Mode:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'Mode':
@@ -45,9 +46,10 @@ class Mode:
         self.varied_parameters = description['parameters']
         self.mode = description['mode']
         self.pvalue = description['pvalue']
+        self.local_pvalues = description['local_pvalues']
 
     @staticmethod
-    def create(path, parameters, mode, pvalue):
+    def create(path, parameters, mode, pvalue, local_pvalues):
         """ Write a new MarkovChain object to disk.
 
         :param path: Path to the storage location, which will be created as a directory.
@@ -66,7 +68,8 @@ class Mode:
             'max': p.max()
         } for p in parameters]
         description['mode'] = mode.tolist()
-        description['pvalue'] = pvalue
+        description['pvalue'] = float(pvalue) if pvalue is not None else None
+        description['local_pvalues'] = local_pvalues
 
         os.makedirs(path, exist_ok=True)
         with open(os.path.join(path, 'description.yaml'), 'w') as description_file:
@@ -87,7 +90,7 @@ class MarkovChain:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'MarkovChain':
@@ -163,7 +166,7 @@ class MixtureDensity:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'MixtureDensity':
@@ -268,7 +271,7 @@ class PMCSampler:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'PMCSampler':
@@ -374,7 +377,7 @@ class ImportanceSamples:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'ImportanceSamples':
@@ -444,7 +447,7 @@ class Prediction:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'Prediction':
@@ -513,7 +516,7 @@ class DynestyResults:
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Description file {} does not exist or is not a file'.format(f))
 
-        with open(f, 'r') as df:
+        with open(f) as df:
             description = yaml.load(df, Loader=yaml.SafeLoader)
 
         if not description['type'] == 'DynestyResults':
@@ -526,7 +529,11 @@ class DynestyResults:
         f = os.path.join(path, 'dynesty_results.npy')
         if not os.path.exists(f) or not os.path.isfile(f):
             raise RuntimeError('Dynesty results file {} does not exist or is not a file'.format(f))
-        self.results = _np.load(f)
+
+        res_dict = _np.load(f, allow_pickle=True).item()
+        if "blob" in res_dict:
+            res_dict.pop('blob')
+        self.results = dynesty.results.Results(res_dict)
         self.samples = self.results.samples
         self.weights = _np.exp(self.results.logwt - self.results.logz[-1])
 
@@ -539,8 +546,8 @@ class DynestyResults:
         :type path: str
         :param parameters: Parameter descriptions as a 1D array of shape (N, ).
         :type parameters: list or iterable of eos.Parameter
-        :param mode: The results of a nested sampling run.
-        :type mode: dynesty.results.Results
+        :param results: The results of a nested sampling run.
+        :type results: dynesty.results.Results
         """
         description = {}
         description['version'] = eos.__version__

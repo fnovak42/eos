@@ -99,15 +99,19 @@ class Plotter:
         if not 'plot' in self.instructions:
             raise KeyError('no plot metadata specified')
 
-        myplot = self.instructions['plot']
+        if 'axis' in self.instructions:
+            self.ax = self.instructions['axis']
+        else:
+            self.fig, self.ax = plt.subplots()
 
-        self.fig, self.ax = plt.subplots()
+        myplot = self.instructions['plot']
 
         mytitle = ''
         myylabel = ''
         myxlabel = ''
         myyscale = 'linear'
         myxscale = 'linear'
+
         if 'title' in myplot:
             mytitle = myplot['title']
 
@@ -141,6 +145,7 @@ class Plotter:
 
             if 'scale' in myx:
                 myxscale = myx['scale']
+                self.ax.xaxis.set_scale(myxscale)
 
             if 'scaling_factor' in myx:
 
@@ -177,6 +182,7 @@ class Plotter:
 
             if 'scale' in myy:
                 myyscale = myy['scale']
+                self.ax.yaxis.set_scale(myyscale)
 
             if 'scaling_factor' in myy:
 
@@ -197,7 +203,7 @@ class Plotter:
         if 'grid' in myplot:
             self.ax.grid(b=True, which=myplot['grid'])
 
-        self.ax.set(xlabel=myxlabel, ylabel=myylabel, xscale=myxscale, yscale=myyscale, title=mytitle)
+        self.ax.set(xlabel=myxlabel, ylabel=myylabel, title=mytitle)
 
     class BasePlot:
         """Base class for any of the plots supported by Plotter"""
@@ -277,7 +283,7 @@ class Plotter:
             self.markersize = item['markersize'] if 'markersize' in item else None
 
         def plot(self):
-            plt.plot(self.x, self.y,
+            self.plotter.ax.plot(self.x, self.y,
                 alpha=self.alpha, color=self.color,
                 label=self.label, linestyle='None',
                 marker=self.marker, markeredgecolor=self.color, markerfacecolor='None',
@@ -302,7 +308,7 @@ class Plotter:
             self.elinewidth = item['elinewidth'] if 'elinewidth' in item else 1.0
 
         def plot(self):
-            plt.errorbar(x=self.x, y=self.y, xerr=self.xerr, yerr=self.yerr,
+            self.plotter.ax.errorbar(x=self.x, y=self.y, xerr=self.xerr, yerr=self.yerr,
                 color=self.color, elinewidth=self.elinewidth, fmt='_', linestyle='none', label=self.label)
 
 
@@ -365,7 +371,7 @@ class Plotter:
                'plot': { ... },
                'contents': [
                    {
-                       'label': r'$\ell=\mu$',
+                       'label': r'$\\ell=\\mu$',
                        'type': 'observable',
                        'observable': 'B->Dlnu::dBR/dq2;l=mu',
                        'variable': 'q2',
@@ -456,12 +462,12 @@ class Plotter:
                 var.set(xvalue)
                 ovalues = np.append(ovalues, observable.evaluate())
 
-            plt.plot(xvalues, ovalues, alpha=self.alpha, color=self.color, label=self.label, ls=self.style, lw=self.lw)
+            self.plotter.ax.plot(xvalues, ovalues, alpha=self.alpha, color=self.color, label=self.label, ls=self.style, lw=self.lw)
 
     class Uncertainty(BasePlot):
         """Plots an uncertainty band as a function of one kinematic variable
 
-        This routine expects the uncertainty propagation to have produced an HDF5 file"""
+        This routine expects the uncertainty propagation to have produced an EOS data file"""
 
         _api_doc = inspect.cleandoc("""\
         Plotting Uncertainty Bands
@@ -507,11 +513,11 @@ class Plotter:
            plot_args = {
                'plot': {
                    'x': { 'label': r'$q^2$' },
-                   'y': { 'label': r'$d\mathcal{B}/dq^2$' }
+                   'y': { 'label': r'$d\\mathcal{B}/dq^2$' }
                },
                'contents': [
                    {
-                       'label': r'$\ell=\mu$',
+                       'label': r'$\\ell=\\mu$',
                        'type': 'uncertainty',
                        'data': { 'samples': mu_samples, 'xvalues': mu_q2values },
                        'range': [0.02, 11.60],
@@ -523,11 +529,11 @@ class Plotter:
         def __init__(self, plotter, item):
             super().__init__(plotter, item)
 
-            if 'data' not in item and 'data-file' not in item and 'hdf5-file' not in item:
-                raise KeyError('neither data, data-file nor hdf5-file specified')
+            if 'data' not in item and 'data-file' not in item:
+                raise KeyError('neither data nor data-file specified')
 
-            if 'data' in item and ('data-file' in item or 'hdf5-file' in item):
-                eos.warn('   both data and one of data-file or hdf5-file specified; assuming interactive use is intended')
+            if 'data' in item and 'data-file' in item:
+                eos.warn('   both data and data-file specified; assuming interactive use is intended')
 
             self.xvalues = None
             self.samples = None
@@ -537,7 +543,7 @@ class Plotter:
                 self.samples = item['data']['samples']
                 if 'weights' in item['data']:
                     self.weights = item['data']['weights']
-            elif 'data-file' in item:
+            else:
                 dfname = item['data-file']
                 eos.info('   plotting uncertainty propagation from "{}"'.format(dfname))
                 df = eos.data.Prediction(dfname)
@@ -550,23 +556,6 @@ class Plotter:
                 self.xvalues = np.array(_xvalues)
                 self.samples = df.samples
                 self.weights = df.weights
-            else:
-                h5fname = item['hdf5-file']
-                eos.info('   plotting uncertainty propagation from HDF5 file "{}"'.format(h5fname))
-                uncfile = eos.data.UncertaintyDataFile(h5fname)
-
-                _xvalues = []
-                for o in uncfile.parameters:
-                    kin = o[1].split(b',')
-                    if len(kin) > 1:
-                        raise ValueError('more than one kinematic variable specified')
-
-                    name, value = kin[0].split(b'=')
-                    value = float(value)
-                    _xvalues.append(value)
-
-                self.xvalues = np.array(_xvalues)
-                self.samples = uncfile.data()
 
             self.band   = item['band']  if 'band'  in item else ['area', 'outer', 'median']
             self.xrange = item['range'] if 'range' in item else None
@@ -618,12 +607,12 @@ class Plotter:
     class UncertaintyBinned(BasePlot):
         """Plots one or more uncertainty band integrated over one kinematic variable
 
-        This routine expects the uncertainty propagation to have produces an HDF5 file"""
+        This routine expects the uncertainty propagation to have produced an data file"""
         def __init__(self, plotter, item):
             super().__init__(plotter, item)
 
-            if 'hdf5-file' not in item and 'data' not in item:
-                raise KeyError('neither hdf5-file nor data specified')
+            if 'data-file' not in item and 'data' not in item:
+                raise KeyError('neither data nor data-file specified')
 
 
             self.weights = None
@@ -633,41 +622,7 @@ class Plotter:
                 if 'weights' in item['data']:
                     self.weights = item['data']['weights']
             else:
-                h5fname = item['hdf5-file']
-                eos.info('   plotting uncertainty propagation from file "{}"'.format(h5fname))
-
-                uncfile = eos.data.UncertaintyDataFile(h5fname)
-
-                if 'kinematic' not in item:
-                    raise KeyError('kinematic not found; do not know how to map x to a kinematic variable')
-
-                xname = item['kinematic']
-
-                self.xvalues = []
-                for o in uncfile.parameters:
-                    kin = o[1].decode('ascii').split(',')
-                    if len(kin) != 2:
-                        raise ValueError('expected exactly two kinematic variables, got {}'.format(len(kin)))
-
-                    name,value = kin[0].strip().split('=')
-                    if name == xname + '_min':
-                        xmin = float(value)
-                    elif name == xname + '_max':
-                        xmax = float(value)
-                    else:
-                        raise ValueError('unexpected kinematic variable \'{}\''.format(name))
-
-                    name,value = kin[1].strip().split('=')
-                    if name == xname + '_min':
-                        xmin = float(value)
-                    elif name == xname + '_max':
-                        xmax = float(value)
-                    else:
-                        raise ValueError('unexpected kinematic variable \'{}\''.format(name))
-
-                    self.xvalues.append([xmin, xmax])
-
-                self.samples = uncfile.data()
+                raise NotImplementedError('data-file not yet implemented')
 
             self.xvalues = np.array(self.xvalues)
 
@@ -699,11 +654,11 @@ class Plotter:
                 ocentral /= width
                 ohi      /= width
                 print("{xmin} ... {xmax} -> {ocentral} with interval {olo} .. {ohi}".format(xmin=xmin, xmax=xmax, olo=olo, ocentral=ocentral, ohi=ohi))
-                plt.fill_between([xmin, xmax], [olo, olo], [ohi, ohi], lw=0, color=self.color, alpha=self.alpha, label=self.label)
+                self.plotter.ax.fill_between([xmin, xmax], [olo, olo], [ohi, ohi], lw=0, color=self.color, alpha=self.alpha, label=self.label)
                 label = None
-                plt.plot([xmin, xmax], [olo,      olo],      color=self.color, alpha=self.alpha)
-                plt.plot([xmin, xmax], [ocentral, ocentral], color=self.color, alpha=self.alpha)
-                plt.plot([xmin, xmax], [ohi,      ohi],      color=self.color, alpha=self.alpha)
+                self.plotter.ax.plot([xmin, xmax], [olo,      olo],      color=self.color, alpha=self.alpha)
+                self.plotter.ax.plot([xmin, xmax], [ocentral, ocentral], color=self.color, alpha=self.alpha)
+                self.plotter.ax.plot([xmin, xmax], [ohi,      ohi],      color=self.color, alpha=self.alpha)
                 self.label = None
 
 
@@ -759,6 +714,7 @@ class Plotter:
          * ``constraints`` (:class:`QualifiedName <eos.QualifiedName>` or iterable thereof) -- The name or the list of names of the constraints
            that will be plotted. Must identify at least one of the constraints known to EOS; see `the complete list of constraints <../constraints.html>`_.
          * ``variable`` (*str*) -- The name of the kinematic variable to which the x axis will be mapped.
+         * ``xrange`` (list of int, optional) -- The interval in which the observable is plotted in the case of a multivariate constraint.
 
         When plotting multivariate constraints, the following key is also mandatory:
 
@@ -774,7 +730,7 @@ class Plotter:
                'plot': { ... },
                'contents': [
                    {
-                       'label': r'Belle 2015 $\ell=e,\, q=d$',
+                       'label': r'Belle 2015 $\\ell=e,\\, q=d$',
                        'type': 'constraint',
                        'color': 'C0',
                        'constraints': 'B^0->D^+e^-nu::BRs@Belle:2015A',
@@ -801,6 +757,7 @@ class Plotter:
             self.observable       = item['observable']       if 'observable'       in item else None
             self.rescale_by_width = item['rescale-by-width'] if 'rescale-by-width' in item else False
             self.variable         = item['variable']
+            self.xrange           = item['xrange']           if 'xrange'           in item else None
 
             if type(self.names) == str:
                 self.names = [self.names]
@@ -905,13 +862,21 @@ class Plotter:
                     raise ValueError('type of constraint presently not supported')
 
                 xvalues = np.array(xvalues)
-                if xerrors:
-                    xerrors = np.array(xerrors)
                 yvalues = np.array(yvalues)
                 yerrors = np.array(yerrors)
 
-                plt.errorbar(x=xvalues, y=yvalues, xerr=xerrors, yerr=yerrors.T,
-                    color=self.color, elinewidth=1.0, fmt='_', linestyle='none', label=self.label)
+                if self.xrange:
+                    mask = np.logical_and(xvalues > min(self.xrange), xvalues < max(self.xrange))
+                else:
+                    mask = np.array([True] * len(xvalues))
+
+                if xerrors:
+                    xerrors = np.array(xerrors)
+                    self.plotter.ax.errorbar(x=xvalues[mask], y=yvalues[mask], xerr=xerrors[mask], yerr=yerrors[mask].T,
+                        color=self.color, elinewidth=1.0, fmt='_', linestyle='none', label=self.label)
+                else:
+                    self.plotter.ax.errorbar(x=xvalues[mask], y=yvalues[mask], yerr=yerrors[mask].T,
+                        color=self.color, elinewidth=1.0, fmt='_', linestyle='none', label=self.label)
                 # disable the label for subsequent plots
                 self.label = None
 
@@ -1186,12 +1151,12 @@ class Plotter:
             yerrors = np.array(yerrors)
 
             self.plotter.ax.tick_params(axis='x', which='minor', bottom=False)
-            plt.xticks(xvalues, xticklabels, rotation=self.rotation)
-            plt.errorbar(x=xvalues, y=yvalues, xerr=None, yerr=yerrors.T,
+            self.plotter.ax.xticks(xvalues, xticklabels, rotation=self.rotation)
+            self.plotter.ax.errorbar(x=xvalues, y=yvalues, xerr=None, yerr=yerrors.T,
                 color=self.color, elinewidth=1.0, fmt='_', linestyle='none', label=self.label)
-            plt.margins(0.2)
+            self.plotter.ax.margins(0.2)
             # Tweak spacing to prevent clipping of tick-labels
-            plt.subplots_adjust(bottom=0.15)
+            self.plotter.ax.subplots_adjust(bottom=0.15)
 
 
     class Contours2D(BasePlot):
@@ -1243,7 +1208,7 @@ class Plotter:
             levels = [pone_sigma, ptwo_sigma, pthree_sigma]
             labels = ['68%', '95%', '99%']
 
-            CS = plt.contour(pdf.transpose(),
+            CS = self.plotter.ax.contour(pdf.transpose(),
                              colors='OrangeRed',
                              extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]],
                              levels=levels[::-1])
@@ -1252,7 +1217,7 @@ class Plotter:
             for level, label in zip(CS.levels, labels[::-1]):
                 fmt[level] = label
 
-            plt.clabel(CS, inline=1, fmt=fmt, fontsize=10)
+            self.plotter.ax.clabel(CS, inline=1, fmt=fmt, fontsize=10)
 
 
     class KernelDensityEstimate1D(BasePlot):
@@ -1306,11 +1271,11 @@ class Plotter:
         def __init__(self, plotter, item):
             super().__init__(plotter, item)
 
-            if 'data' not in item and 'data-file' not in item and 'hdf5-file' not in item:
-                raise KeyError('neither data nor data-file nor hdf5-file specified')
+            if 'data' not in item and 'data-file' not in item:
+                raise KeyError('neither data nor data-file specified')
 
-            if 'data' in item and ('data-file' in item or 'hdf5-file' in item):
-                eos.warn('   both data and one of data-file, hdf5-file specified; assuming interactive use is intended')
+            if 'data' in item and 'data-file' in item:
+                eos.warn('   both data and data-file specified; assuming interactive use is intended')
 
             self.samples = None
             self.weights = None
@@ -1325,7 +1290,7 @@ class Plotter:
                     self.weights = np.exp(item['data']['log_weights'])
                 else:
                     self.weights = None
-            elif 'data-file' in item:
+            else:
                 if 'variable' not in item:
                     raise KeyError('no variable specificed')
 
@@ -1350,22 +1315,6 @@ class Plotter:
                     self.weights = df.weights
                 else:
                     raise ValueError(f'Do not recognize data-file prefix: {dfname}')
-            else:
-                h5fname = item['hdf5-file']
-                eos.info('   plotting histogram from file "{}"'.format(h5fname))
-                datafile = eos.data.load_data_file(h5fname)
-
-                if 'variable' not in item:
-                    raise KeyError('no variable specificed')
-                variable = item['variable']
-
-                if variable not in datafile.variable_indices:
-                    raise ValueError('variable {} not contained in data file'.format(variable))
-
-                index        = datafile.variable_indices[variable]
-                self.samples = datafile.data()[:, index]
-                # TODO: use weights from data file
-                self.weights = None
 
             self.bw       = item['bandwidth'] if 'bandwidth' in item else None
             self.level    = item['level']     if 'level'     in item else 68.27
@@ -1389,7 +1338,7 @@ class Plotter:
                                              np.ma.masked_array(pdf, mask=pdf < plevel * pdf_norm, fill_value=np.nan),
                                              facecolor=self.color, alpha=self.alpha)
 
-            plt.plot(x, pdf, color=self.color, label=self.label)
+            self.plotter.ax.plot(x, pdf, color=self.color, label=self.label)
 
 
     class KernelDensityEstimate2D(BasePlot):
@@ -1450,11 +1399,11 @@ class Plotter:
         def __init__(self, plotter, item):
             super().__init__(plotter, item)
 
-            if 'data' not in item and 'hdf5-file' not in item:
-                raise KeyError('neither data nor hdf5-file specified')
+            if 'data' not in item and 'data-file' not in item:
+                raise KeyError('neither data nor data-file specified')
 
-            if 'data' in item and 'hdf5-file' in item:
-                eos.warn('   both data and hdf5-file specified; assuming interactive use is intended')
+            if 'data' in item and 'data-file' in item:
+                eos.warn('   both data and data-file specified; assuming interactive use is intended')
 
             self.samples = None
             self.weights = None
@@ -1469,33 +1418,6 @@ class Plotter:
                     self.weights = np.exp(item['data']['log_weights'])
                 else:
                     self.weights = None
-
-            else:
-                h5fname = item['hdf5-file']
-                eos.info('   plotting 2D KDE from file "{}"'.format(h5fname))
-                datafile = eos.data.load_data_file(h5fname)
-
-                if 'variables' not in item:
-                    raise KeyError('no variables specificed')
-
-                xvariable, yvariable = item['variables']
-
-                if xvariable not in datafile.variable_indices:
-                    raise ValueError('x-axis variable {} not contained in data file'.format(variable))
-
-                if yvariable not in datafile.variable_indices:
-                    raise ValueError('y-axis variable {} not contained in data file'.format(variable))
-
-                stride = item['stride'] if 'stride' in item else 1
-                data   = datafile.data()
-                xindex = datafile.variable_indices[xvariable]
-                xdata  = data[::stride, xindex]
-                yindex = datafile.variable_indices[yvariable]
-                ydata  = data[::stride, yindex]
-
-                self.samples = np.vstack([xdata, ydata])
-                # TODO: use weights from data file
-                self.weights = None
 
             self.bw       = item['bandwidth'] if 'bandwidth' in item else None
             self.levels   = item['levels']    if 'levels'    in item else [0, 68, 95, 99]
@@ -1528,12 +1450,12 @@ class Plotter:
 
             if 'areas' in self.contours:
                 colors = [matplotlib.colors.to_rgba(self.color, alpha) for alpha in np.linspace(0.50, 1.00, len(self.levels))]
-                plt.contourf(pdf.transpose(),
+                self.plotter.ax.contourf(pdf.transpose(),
                              colors=colors,
                              extent=[self.xrange[0], self.xrange[1], self.yrange[0], self.yrange[1]],
                              levels=plevels[::-1])
 
-            CS = plt.contour(pdf.transpose(),
+            CS = self.plotter.ax.contour(pdf.transpose(),
                              colors=self.color,
                              extent=[self.xrange[0], self.xrange[1], self.yrange[0], self.yrange[1]],
                              levels=plevels[::-1],
@@ -1544,7 +1466,7 @@ class Plotter:
                 for level, label in zip(CS.levels, labels[::-1]):
                     fmt[level] = label
 
-                plt.clabel(CS, inline=1, fmt=fmt, fontsize=10)
+                self.plotter.ax.clabel(CS, inline=1, fmt=fmt, fontsize=10)
 
         def handles_labels(self):
             if self.label:
@@ -1618,12 +1540,12 @@ class Plotter:
 
             if 'areas' in self.contours:
                 colors = [matplotlib.colors.to_rgba(self.color, alpha) for alpha in np.linspace(0.50, 1.00, len(self.levels))]
-                plt.contourf(pdf.transpose(),
+                self.plotter.ax.contourf(pdf.transpose(),
                              colors=colors,
                              extent=[self.xrange[0], self.xrange[1], self.yrange[0], self.yrange[1]],
                              levels=plevels[::-1])
 
-            CS = plt.contour(pdf.transpose(),
+            CS = self.plotter.ax.contour(pdf.transpose(),
                              colors=self.color,
                              extent=[self.xrange[0], self.xrange[1], self.yrange[0], self.yrange[1]],
                              levels=plevels[::-1],
@@ -1634,7 +1556,7 @@ class Plotter:
                 for level, label in zip(CS.levels, labels[::-1]):
                     fmt[level] = label
 
-                plt.clabel(CS, inline=1, fmt=fmt, fontsize=10)
+                self.plotter.ax.clabel(CS, inline=1, fmt=fmt, fontsize=10)
 
         def handles_labels(self):
             if self.label:
@@ -1676,7 +1598,7 @@ class Plotter:
            plot_args = {
                'plot': {
                    'x': { 'label': r'$|V_{cb}|$' },
-                   'y': { 'label': r'$d\mathcal{B}/dq^2$' }
+                   'y': { 'label': r'$d\\mathcal{B}/dq^2$' }
                },
                'contents': [
                    {
@@ -1691,11 +1613,11 @@ class Plotter:
         def __init__(self, plotter, item):
             super().__init__(plotter, item)
 
-            if 'data' not in item and 'data-file' not in item and 'hdf5-file' not in item:
+            if 'data' not in item and 'data-file' not in item:
                 raise KeyError('neither data nor hdf5-file specified')
 
-            if 'data' in item and 'hdf5-file' in item:
-                eos.warn('   both data and hdf5-file specified; assuming interactive use is intended')
+            if 'data' in item and 'data-file' in item:
+                eos.warn('   both data and data-file specified; assuming interactive use is intended')
 
             self.samples = None
             self.weights = None
@@ -1710,7 +1632,7 @@ class Plotter:
                     self.weights = np.exp(item['data']['log_weights'])
                 else:
                     self.weights = None
-            elif 'data-file' in item:
+            else:
                 if 'variable' not in item:
                     raise KeyError('no variable specificed')
 
@@ -1735,29 +1657,13 @@ class Plotter:
                     self.weights = df.weights
                 else:
                     raise ValueError(f'Do not recognize data-file prefix: {dfname}')
-            else:
-                h5fname = item['hdf5-file']
-                eos.info('   plotting histogram from file "{}"'.format(h5fname))
-                datafile = eos.data.load_data_file(h5fname)
-
-                if 'variable' not in item:
-                    raise KeyError('no variable specificed')
-                variable = item['variable']
-
-                if variable not in datafile.variable_indices:
-                    raise ValueError('variable {} not contained in data file'.format(variable))
-
-                index        = datafile.variable_indices[variable]
-                self.samples = datafile.data()[:, index]
-                # TODO: use weights from data file
-                self.weights = None
 
             self.bins     = item['bins']      if 'bins'      in item     else 100
             self.histtype = item['histtype']  if 'histtype'  in item     else 'bar'
             self.lw       = 3                 if self.histtype == 'step' else 1
 
         def plot(self):
-            plt.hist(self.samples, weights=self.weights, density=True,
+            self.plotter.ax.hist(self.samples, weights=self.weights, density=True,
                     alpha=self.alpha, bins=self.bins, color=self.color,
                     histtype=self.histtype, label=self.label, lw=self.lw)
 
@@ -1796,11 +1702,11 @@ class Plotter:
            plot_args = {
                'plot': {
                    'x': { 'label': r'$q^2$', 'unit': r'$\textnormal{GeV}^2$', 'range': [ 0.0, 10.50] },
-                   'y': { 'label': r'$cos(\theta_\ell)$',                     'range': [-1.0,  +1.0] },
+                   'y': { 'label': r'$cos(\theta_\\ell)$',                     'range': [-1.0,  +1.0] },
                },
                'contents': [
                    {
-                       'label': r'samples ($\ell=\mu$)',
+                       'label': r'samples ($\\ell=\\mu$)',
                        'type': 'histogram2D',
                        'data': {
                            'samples': dstarlnu_samples[:, (0, 1)]
@@ -1816,10 +1722,10 @@ class Plotter:
         def __init__(self, plotter, item):
             super().__init__(plotter, item)
 
-            if 'data' not in item and 'hdf5-file' not in item:
-                raise KeyError('neither data nor hdf5-file specified')
+            if 'data' not in item and 'data-file' not in item:
+                raise KeyError('neither data not data-file specified')
 
-            if 'data' in item and 'hdf5-file' in item:
+            if 'data' in item and 'data-file' in item:
                 eos.warn('   both data and hdf5-file specified; assuming interactive use is intended')
 
             self.samples = None
@@ -1836,38 +1742,13 @@ class Plotter:
                 else:
                     self.weights = None
 
-            else:
-                h5fname = item['hdf5-file']
-                eos.info('   plotting histogram from file "{}"'.format(h5fname))
-                datafile = eos.data.load_data_file(h5fname)
-
-                if 'variables' not in item:
-                    raise KeyError('no variables specificed')
-
-                xvariable, yvariable = item['variables']
-
-                if xvariable not in datafile.variable_indices:
-                    raise ValueError('variable {} not contained in data file'.format(xvariable))
-
-                xindex = datafile.variable_indices[xvariable]
-
-                if xvariable not in datafile.variable_indices:
-                    raise ValueError('variable {} not contained in data file'.format(yvariable))
-
-                yindex = datafile.variable_indices[yvariable]
-
-                data = datafile.data()
-                self.samples = datafile.data()[:, (xindex, yindex)]
-                # TODO: use weights from data file
-                self.weights = None
-
             self.bins  = item['bins']    if 'bins'    in item else 100
 
         def plot(self):
             #cmap = plt.get_cmap('viridis')
             #cmap.set_under('w', 1)
 
-            plt.hist2d(self.samples[:, 0], self.samples[:, 1], bins=self.bins, cmin=1, cmap=plt.get_cmap('viridis'),
+            self.plotter.ax.hist2d(self.samples[:, 0], self.samples[:, 1], bins=self.bins, cmin=1, cmap=plt.get_cmap('viridis'),
                        label=self.label)
 
 
@@ -1923,7 +1804,7 @@ class Plotter:
                 var.set(xvalue)
                 pvalues = np.append(pvalues, pdf.evaluate())
 
-            plt.plot(xvalues, np.exp(pvalues - norm), alpha=self.alpha, color=self.color, label=self.label, ls=self.style)
+            self.plotter.ax.plot(xvalues, np.exp(pvalues - norm), alpha=self.alpha, color=self.color, label=self.label, ls=self.style)
 
 
     class Expression(BasePlot):
@@ -1942,14 +1823,14 @@ class Plotter:
             samples = item['samples'] if 'samples' in item else 100
             label  = item['label']   if 'label'   in item else None
 
-            xmin, xmax = plt.xlim()
+            xmin, xmax = self.plotter.ax.get_xlim()
             x = np.linspace(xmin, xmax, samples)
             y = []
 
             for xvalue in x:
                 y.append(eval(f, {}, {'x': xvalue}))
 
-            plt.plot(x, y, color=color, alpha=alpha, linestyle=style, label=label)
+            self.plotter.ax.plot(x, y, color=color, alpha=alpha, linestyle=style, label=label)
 
 
     class Watermark(BasePlot):
@@ -1982,7 +1863,7 @@ class Plotter:
             else:
                 raise ValueError('invalid vertical position \'{}\''.format(hpos))
 
-            ax = plt.gca()
+            ax = self.plotter.ax
             color = 'OrangeRed'
             version = 'v{version}'.format(version=eos.__version__)
             if 'preliminary' in item and item['preliminary']:
@@ -2002,7 +1883,7 @@ class Plotter:
         'constraint':            Constraint,
         'constraint2D':          Constraint2D,
         'constraint-overview':   ConstraintOverview,
-        'contours2D':            Contours2D,
+        #'contours2D':            Contours2D,
         'expression':            Expression,
         'errorbar':              ErrorBar,
         'histogram':             Histogram1D,
@@ -2015,7 +1896,7 @@ class Plotter:
         'signal-pdf':            SignalPDF,
         'uncertainty':           Uncertainty,
         'uncertainty-binned':    UncertaintyBinned,
-        'uncertainty-overview':  UncertaintyOverview,
+        #'uncertainty-overview':  UncertaintyOverview,
         'watermark':             Watermark,
     }
 

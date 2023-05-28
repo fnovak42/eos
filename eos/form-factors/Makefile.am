@@ -7,7 +7,9 @@ AM_LDFLAGS = @AM_LDFLAGS@
 lib_LTLIBRARIES = libeosformfactors.la
 libeosformfactors_la_SOURCES = \
 	analytic-b-to-gamma-qcdf.cc analytic-b-to-gamma-qcdf.hh \
-	analytic-b-to-pi.hh analytic-b-to-pi.cc \
+	analytic-b-to-psd-dkmmo2008.hh analytic-b-to-psd-dkmmo2008-impl.hh \
+	analytic-b-to-pi-dkmmo2008.cc \
+	analytic-bs-to-k-dkmmo2008.cc \
 	analytic-b-to-pi-pi.hh analytic-b-to-pi-pi.cc \
 	analytic-b-to-p-lcsr.hh analytic-b-to-p-lcsr-impl.hh \
 	analytic-b-to-pi-lcsr.cc  analytic-b-to-k-lcsr.cc  analytic-b-to-d-lcsr.cc \
@@ -44,6 +46,7 @@ libeosformfactors_la_SOURCES = \
 	parametric-kkvdz2022.hh parametric-kkvdz2022.cc \
 	parametric-kmpw2010.hh parametric-kmpw2010-impl.hh parametric-kmpw2010.cc \
 	pi-lcdas.cc pi-lcdas.hh \
+	psd-lcdas.cc psd-lcdas.hh \
 	unitarity-bounds.cc unitarity-bounds.hh \
 	zero-recoil-sum-rule.cc zero-recoil-sum-rule.hh
 libeosformfactors_la_CXXFLAGS = $(AM_CXXFLAGS) $(GSL_CXXFLAGS)
@@ -57,8 +60,8 @@ libeosformfactors_la_LIBADD = \
 
 include_eos_rarebdecaysdir = $(includedir)/eos/form-factors
 include_eos_rarebdecays_HEADERS = \
-	analytic-b-to-pi.hh \
 	analytic-b-to-pi-pi.hh \
+	analytic-b-to-psd-dkmmo2008.hh \
 	b-lcdas.hh \
 	b-lcdas-exponential.hh \
 	b-lcdas-flvd2022.hh \
@@ -85,15 +88,19 @@ AM_TESTS_ENVIRONMENT = \
 TESTS = \
 	analytic-b-to-gamma-qcdf_TEST \
 	analytic-b-to-pi_TEST \
+	analytic-bs-to-k_TEST \
 	analytic-b-to-pi-pi_TEST \
 	analytic-b-to-p-lcsr_TEST \
 	analytic-b-to-v-lcsr_TEST \
+	baryonic_TEST \
+	b-lcdas_TEST \
 	b-lcdas-exponential_TEST \
 	b-lcdas-flvd2022_TEST \
 	hqet-b-to-c_TEST \
 	k-lcdas_TEST \
 	kstar-lcdas_TEST \
 	lcda_TEST \
+	mesonic_TEST \
 	parametric-abr2022_TEST \
 	parametric-bbgorvd2018_TEST \
 	parametric-bcl2008_TEST \
@@ -109,6 +116,7 @@ TESTS = \
 	parametric-kkvdz2022_TEST \
 	parametric-kmpw2010_TEST \
 	pi-lcdas_TEST \
+	psd-lcdas_TEST \
 	unitarity-bounds_TEST
 LDADD = \
 	$(top_builddir)/test/libeostest.la \
@@ -124,12 +132,18 @@ analytic_b_to_gamma_qcdf_TEST_SOURCES = analytic-b-to-gamma-qcdf_TEST.cc
 
 analytic_b_to_pi_TEST_SOURCES = analytic-b-to-pi_TEST.cc
 
+analytic_bs_to_k_TEST_SOURCES = analytic-bs-to-k_TEST.cc
+
 analytic_b_to_pi_pi_TEST_SOURCES = analytic-b-to-pi-pi_TEST.cc
 analytic_b_to_pi_pi_TEST_CXXFLAGS = $(AM_CXXFLAGS) $(GSL_CXXFLAGS)
 
 analytic_b_to_p_lcsr_TEST_SOURCES = analytic-b-to-p-lcsr_TEST.cc
 
 analytic_b_to_v_lcsr_TEST_SOURCES = analytic-b-to-v-lcsr_TEST.cc
+
+baryonic_TEST_SOURCES = baryonic_TEST.cc
+
+b_lcdas_TEST_SOURCES = b-lcdas_TEST.cc
 
 b_lcdas_exponential_TEST_SOURCES = b-lcdas-exponential_TEST.cc
 
@@ -142,6 +156,8 @@ k_lcdas_TEST_SOURCES = k-lcdas_TEST.cc
 kstar_lcdas_TEST_SOURCES = kstar-lcdas_TEST.cc
 
 lcda_TEST_SOURCES = lcda_TEST.cc
+
+mesonic_TEST_SOURCES = mesonic_TEST.cc
 
 parametric_abr2022_TEST_SOURCES = parametric-abr2022_TEST.cc
 
@@ -173,5 +189,6 @@ parametric_kmpw2010_TEST_SOURCES = parametric-kmpw2010_TEST.cc
 
 pi_lcdas_TEST_SOURCES = pi-lcdas_TEST.cc
 
-unitarity_bounds_TEST_SOURCES = unitarity-bounds_TEST.cc
+psd_lcdas_TEST_SOURCES = psd-lcdas_TEST.cc
 
+unitarity_bounds_TEST_SOURCES = unitarity-bounds_TEST.cc

@@ -312,21 +312,21 @@ groups:
           max:     +0.1918
           latex:    '$f_{\bar{B}^0}$'
           unit:     'GeV'
-          comments: 'cf. [Fermilab-MILC-2017]'
+          comments: 'cf. [FNAL+MILC:2017A]'
       'decay-constant::B_u' :
           central: +0.1894
           min:     +0.1880
           max:     +0.1908
           latex:    '$f_{B^-}$'
           unit:     'GeV'
-          comments: 'cf. [Fermilab-MILC-2017]'
+          comments: 'cf. [FNAL+MILC:2017A]'
       'decay-constant::B_s' :
           central: +0.2307
           min:     +0.2294
-          max:     +0.2330
+          max:     +0.2320
           latex:    '$f_{\bar{B}_s^0}$'
           unit:     'GeV'
-          comments: 'cf. [Fermilab-MILC-2017]'
+          comments: 'cf. [FNAL+MILC:2017A]'
       'decay-constant::B_c' :
           central: +0.434
           min:     +0.419
@@ -452,21 +452,21 @@ groups:
           max:     +0.2133
           latex:    '$f_{D^-}$'
           unit:     'GeV'
-          comments: 'cf. [Fermilab-MILC-2017]'
+          comments: 'cf. [FNAL+MILC:2017A]'
       'decay-constant::D_u' :
           central: +0.2116
           min:     +0.2109
           max:     +0.2123
           latex:    '$f_{D^0}$'
           unit:     'GeV'
-          comments: 'cf. [Fermilab-MILC-2017]'
+          comments: 'cf. [FNAL+MILC:2017A]'
       'decay-constant::D_s' :
           central: +0.2499
           min:     +0.2494
           max:     +0.2504
           latex:    '$f_{D_s^-}$'
           unit:     'GeV'
-          comments: 'cf. [Fermilab-MILC-2017]'
+          comments: 'cf. [FNAL+MILC:2017A]'
       'decay-constant::D_d^*' :
           central: +0.242
           min:     +0.222
@@ -658,7 +658,7 @@ groups:
           latex:    '$\omega^{\pi}_4(1\,\mathrm{GeV})$'
           unit:     '1'
           comments: 'cf. [DKMMO:2008A]'
-      'pi::delta^2@1GeV' :
+      'pi::delta4@1GeV' :
           central: +0.18
           min:     +0.12
           max:     +0.24
@@ -670,13 +670,25 @@ groups:
           central: -0.07
           min:     -0.10
           max:     -0.04
-          latex:    '$a^{\pi}_1(1\,\mathrm{GeV})$'
+          latex:    '$a^{K}_1(1\,\mathrm{GeV})$'
           unit:     '1'
       'K::a2@1GeV' :
           central: +0.24
           min:     +0.16
           max:     +0.32
-          latex:    '$a^{\pi}_2(1\,\mathrm{GeV})$'
+          latex:    '$a^{K}_2(1\,\mathrm{GeV})$'
+          unit:     '1'
+      'K::a3@1GeV' :
+          central:  0.00
+          min:     -0.10
+          max:     +0.10
+          latex:    '$a^{K}_3(1\,\mathrm{GeV})$'
+          unit:     '1'
+      'K::a4@1GeV' :
+          central: +0.00
+          min:     -0.10
+          max:     +0.10
+          latex:    '$a^{K}_4(1\,\mathrm{GeV})$'
           unit:     '1'
       'K::f3@1GeV' :
           central: +0.0045
@@ -706,7 +718,7 @@ groups:
           latex:    '$\omega^{K}_4(1\,\mathrm{GeV})$'
           unit:     '1'
           comments: 'cf. [DKMMO:2008A]'
-      'K::delta^2@1GeV' :
+      'K::delta4@1GeV' :
           central: +0.18
           min:     +0.12
           max:     +0.24

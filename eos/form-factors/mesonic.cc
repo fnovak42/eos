@@ -21,10 +21,11 @@
  */
 
 #include <eos/form-factors/analytic-b-to-gamma-qcdf.hh>
-#include <eos/form-factors/analytic-b-to-pi.hh>
+#include <eos/form-factors/analytic-b-to-psd-dkmmo2008.hh>
 #include <eos/form-factors/analytic-b-to-pi-pi.hh>
 #include <eos/form-factors/analytic-b-to-p-lcsr.hh>
 #include <eos/form-factors/analytic-b-to-v-lcsr.hh>
+#include <eos/form-factors/form-factors.hh>
 #include <eos/form-factors/parametric-bcl2008.hh>
 #include <eos/form-factors/parametric-bfw2010.hh>
 #include <eos/form-factors/parametric-bgl1997.hh>
@@ -132,14 +133,18 @@ namespace eos
     std::shared_ptr<FormFactors<PToV>>
     FormFactorFactory<PToV>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a P->V form factor");
+
         std::shared_ptr<FormFactors<PToV>> result;
 
         auto i = form_factors.find(name);
         if (form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 
@@ -190,6 +195,8 @@ namespace eos
     std::shared_ptr<FormFactors<PToGamma>>
     FormFactorFactory<PToGamma>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a P->gamma form factor");
+
         std::shared_ptr<FormFactors<PToGamma>> result;
 
         auto & form_factors = FormFactorFactory<PToGamma>::form_factors;
@@ -197,8 +204,10 @@ namespace eos
         if (form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 
@@ -228,6 +237,8 @@ namespace eos
     std::shared_ptr<FormFactors<PToGammaOffShell>>
     FormFactorFactory<PToGammaOffShell>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a P->gamma^* form factor");
+
         std::shared_ptr<FormFactors<PToGammaOffShell>> result;
 
         auto & form_factors = FormFactorFactory<PToGammaOffShell>::form_factors;
@@ -235,8 +246,10 @@ namespace eos
         if (form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 
@@ -289,35 +302,36 @@ namespace eos
     {
         // parametrizations
         // b -> s
-        { "B->K::BCL2008",       &BCL2008FormFactors<BToK, 3u>::make              },
-        { "B->K::KMPW2010",      &KMPW2010FormFactors<PToP>::make                 },
-        { "B->K::BSZ2015",       &BSZ2015FormFactors<BToK,   PToP>::make          },
-        { "B->K::BFW2010",       &BFW2010FormFactors<BToK,   PToP>::make          },
+        { "B->K::BCL2008",       &BCL2008FormFactors<BToK, 3u>::make                                                                                          },
+        { "B->K::KMPW2010",      &KMPW2010FormFactors<PToP>::make                                                                                             },
+        { "B->K::BSZ2015",       &BSZ2015FormFactors<BToK,   PToP>::make                                                                                      },
+        { "B->K::BFW2010",       &BFW2010FormFactors<BToK,   PToP>::make                                                                                      },
         // b -> u
-        { "B->pi::BCL2008",      &BCL2008FormFactors<BToPi, 3u>::make             },
-        { "B->pi::BCL2008-4",    &BCL2008FormFactors<BToPi, 4u>::make             },
-        { "B->pi::BCL2008-5",    &BCL2008FormFactors<BToPi, 5u>::make             },
-        { "B->pi::BSZ2015",      &BSZ2015FormFactors<BToPi,  PToP>::make          },
-        { "B_s->K::BSZ2015",     &BSZ2015FormFactors<BsToK,  PToP>::make          },
+        { "B->pi::BCL2008",      &BCL2008FormFactors<BToPi, 3u>::make                                                                                         },
+        { "B->pi::BCL2008-4",    &BCL2008FormFactors<BToPi, 4u>::make                                                                                         },
+        { "B->pi::BCL2008-5",    &BCL2008FormFactors<BToPi, 5u>::make                                                                                         },
+        { "B->pi::BSZ2015",      &BSZ2015FormFactors<BToPi,  PToP>::make                                                                                      },
+        { "B_s->K::BSZ2015",     &BSZ2015FormFactors<BsToK,  PToP>::make                                                                                      },
         // b -> c
-        { "B->D::BCL2008",       &BCL2008FormFactors<BToD, 3u>::make              },
-        { "B->D::BSZ2015",       &BSZ2015FormFactors<BToD,   PToP>::make          },
-        { "B->D::BGJvD2019",     &HQETFormFactors<BToD,      PToP>::make          },
-        { "B->D::BGL1997",       &BGL1997FormFactors<BToD>::make                  },
-        { "B_s->D_s::BSZ2015",   &BSZ2015FormFactors<BsToDs, PToP>::make          },
-        { "B_s->D_s::BGJvD2019", &HQETFormFactors<BsToDs,    PToP>::make          },
+        { "B->D::BCL2008",       &BCL2008FormFactors<BToD, 3u>::make                                                                                          },
+        { "B->D::BSZ2015",       &BSZ2015FormFactors<BToD,   PToP>::make                                                                                      },
+        { "B->D::BGJvD2019",     &HQETFormFactors<BToD,      PToP>::make                                                                                      },
+        { "B->D::BGL1997",       &BGL1997FormFactors<BToD>::make                                                                                              },
+        { "B_s->D_s::BSZ2015",   &BSZ2015FormFactors<BsToDs, PToP>::make                                                                                      },
+        { "B_s->D_s::BGJvD2019", &HQETFormFactors<BsToDs,    PToP>::make                                                                                      },
         // c -> d
-        { "D->pi::BSZ2015",      &BSZ2015FormFactors<DToPi,  PToP>::make          },
-        { "D_s->K::BSZ2015",     &BSZ2015FormFactors<DsToK,  PToP>::make          },
+        { "D->pi::BSZ2015",      &BSZ2015FormFactors<DToPi,  PToP>::make                                                                                      },
+        { "D_s->K::BSZ2015",     &BSZ2015FormFactors<DsToK,  PToP>::make                                                                                      },
         // c -> s
-        { "D->K::BSZ2015",       &BSZ2015FormFactors<DToK,   PToP>::make          },
+        { "D->K::BSZ2015",       &BSZ2015FormFactors<DToK,   PToP>::make                                                                                      },
         // analytic computations
-        { "B->pi::DKMMO2008",    &AnalyticFormFactorBToPiDKMMO2008::make          },
-        { "B->pi::B-LCSR",       &AnalyticFormFactorBToPLCSR<lcsr::BToPi>::make   },
-        { "B->K::B-LCSR",        &AnalyticFormFactorBToPLCSR<lcsr::BToK>::make    },
-        { "B->D::B-LCSR",        &AnalyticFormFactorBToPLCSR<lcsr::BToD>::make    },
-        { "B_s->K::B-LCSR",      &AnalyticFormFactorBToPLCSR<lcsr::BsToK>::make   },
-        { "B_s->D_s::B-LCSR",    &AnalyticFormFactorBToPLCSR<lcsr::BsToDs>::make  }
+        { "B->pi::DKMMO2008",    &AnalyticFormFactorBToPseudoscalarDKMMO2008<QuarkFlavor::bottom, QuarkFlavor::up, QuarkFlavor::down>::make                   },
+        { "B_s->K::DKMMO2008",   &AnalyticFormFactorBToPseudoscalarDKMMO2008<QuarkFlavor::bottom, QuarkFlavor::up, QuarkFlavor::strange>::make                },
+        { "B->pi::B-LCSR",       &AnalyticFormFactorBToPLCSR<lcsr::BToPi>::make                                                                               },
+        { "B->K::B-LCSR",        &AnalyticFormFactorBToPLCSR<lcsr::BToK>::make                                                                                },
+        { "B->D::B-LCSR",        &AnalyticFormFactorBToPLCSR<lcsr::BToD>::make                                                                                },
+        { "B_s->K::B-LCSR",      &AnalyticFormFactorBToPLCSR<lcsr::BsToK>::make                                                                               },
+        { "B_s->D_s::B-LCSR",    &AnalyticFormFactorBToPLCSR<lcsr::BsToDs>::make                                                                              }
     };
 
     complex<double>
@@ -344,14 +358,18 @@ namespace eos
     std::shared_ptr<FormFactors<PToP>>
     FormFactorFactory<PToP>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a P->P form factor");
+
         std::shared_ptr<FormFactors<PToP>> result;
 
         auto i = FormFactorFactory<PToP>::form_factors.find(name);
         if (FormFactorFactory<PToP>::form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 
@@ -401,14 +419,18 @@ namespace eos
     std::shared_ptr<FormFactors<PToPP>>
     FormFactorFactory<PToPP>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a P->PP form factor");
+
         std::shared_ptr<FormFactors<PToPP>> result;
 
         auto i = FormFactorFactory<PToPP>::form_factors.find(name);
         if (FormFactorFactory<PToPP>::form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 
@@ -442,14 +464,18 @@ namespace eos
     std::shared_ptr<FormFactors<VToP>>
     FormFactorFactory<VToP>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a V->P form factor");
+
         std::shared_ptr<FormFactors<VToP>> result;
 
         auto i = FormFactorFactory<VToP>::form_factors.find(name);
         if (FormFactorFactory<VToP>::form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 
@@ -484,14 +510,18 @@ namespace eos
     std::shared_ptr<FormFactors<VToV>>
     FormFactorFactory<VToV>::create(const QualifiedName & name, const Parameters & parameters, const Options & options)
     {
+        Context ctx("When creating a V->V form factor");
+
         std::shared_ptr<FormFactors<VToV>> result;
 
         auto i = FormFactorFactory<VToV>::form_factors.find(name);
         if (FormFactorFactory<VToV>::form_factors.end() != i)
         {
             result.reset(i->second(parameters, name.options() + options));
+            return result;
         }
 
+        throw NoSuchFormFactorError(name.prefix_part().str(), name.name_part().str());
         return result;
     }
 

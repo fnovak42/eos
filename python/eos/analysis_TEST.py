@@ -7,6 +7,28 @@ import yaml
 
 class ClassMethodTests(unittest.TestCase):
 
+    def test_priors(self):
+
+        # Note: the cases are not physically meaningful
+        prior_cases = [
+            { 'parameter': 'B->D::alpha^f+_0@BSZ2015', 'min':  0.0, 'max': 1.0, 'type': 'uniform'},
+            { 'parameter': 'B->D::alpha^f+_0@BSZ2015', 'min':  0.0, 'max': 1.0, 'central': 0.0, 'sigma': 1.0 , 'type': 'gaussian'},
+            { 'parameter': 'B->D::alpha^f+_0@BSZ2015', 'min':  0.0, 'max': 1.0, 'central': 0.0, 'sigma': (0.3, 0.5) , 'type': 'gaussian'},
+            { 'parameter': 'B->D::alpha^f+_0@BSZ2015', 'min':  0.0, 'max': 1.0, 'mu_0': 1.0, 'lambda' :2.0, 'type': 'scale'},
+        ]
+
+        for prior in prior_cases:
+            analysis_args = {
+                'priors': [ prior ],
+                'likelihood': [ ]
+            }
+
+            try:
+                analysis = eos.Analysis(**analysis_args)
+            except Exception as e:
+                self.fail(f"Can not construct analysis with prior '{ prior }'")
+
+
     def test_parameter_scaling(self):
 
         analysis_args = {
@@ -57,14 +79,14 @@ class ClassMethodTests(unittest.TestCase):
 
         input_output_cases = [
             {'dirty': np.double(1.61), 'clean': float(1.61)},
-            {'dirty': np.str_('Gaussian'), 'clean': str("Gaussian")},
+            {'dirty': np.str_('Gaussian'), 'clean': "Gaussian"},
             {
              'dirty': {'type': types[0], 'mean': values[0]}, # Simplified manual contraint with numpy types
-             'clean': {'type': str('Gaussian'), 'mean': float(4.123)}
+             'clean': {'type': 'Gaussian', 'mean': float(4.123)}
             },
             {
              'dirty': {'type': types, 'mean': values}, # Simplified manual contraint with numpy arrays
-             'clean': {'type': [str('Gaussian'), str('Gaussian')], 'mean': [float(4.123), float(3.141)]}
+             'clean': {'type': ['Gaussian', 'Gaussian'], 'mean': [float(4.123), float(3.141)]}
             },
         ]
 

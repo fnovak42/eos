@@ -7,7 +7,7 @@ namespace eos
 {
     BToKstarGamma::AmplitudeGenerator::AmplitudeGenerator(const Parameters & p, const Options & o) :
         model(Model::make(o.get("model", "SM"), p, o)),
-        form_factors(FormFactorFactory<PToV>::create("B->K^*::" + o.get("form-factors", "KMPW2010"), p)),
+        form_factors(FormFactorFactory<PToV>::create("B->K^*::" + o.get("form-factors", "BSZ2015"), p)),
         hbar(p["QM::hbar"], *this),
         mu(p["sb::mu"], *this),
         alpha_e(p["QED::alpha_e(m_b)"], *this),
@@ -19,9 +19,6 @@ namespace eos
         m_l(p["mass::" + l.value()], *this),
         cp_conjugate(destringify<bool>(o.get("cp-conjugate", "false")))
     {
-        if (! form_factors.get())
-            throw InternalError("Form factors not found!");
-
         std::string spectator_quark = o.get("q", "d");
         if (spectator_quark.size() != 1)
             throw InternalError("Option q should only be one character!");

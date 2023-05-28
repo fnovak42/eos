@@ -65,7 +65,7 @@ You might need to install the ``curl`` program first, if not already installed. 
 
 ::
 
-  pip3 install --user --upgrade h5py matplotlib networkx numpy pypmc pyyaml scipy
+  pip3 install --user --upgrade dynesty matplotlib networkx numpy pypmc pyyaml scipy
 
 
 *******
@@ -96,7 +96,7 @@ We recommend installing the most up-to-date Python package from the Python Packa
 
 ::
 
-  pip3 install --user --upgrade h5py matplotlib numpy pypmc pyyaml scipy
+  pip3 install --user --upgrade dynesty matplotlib numpy pypmc pyyaml scipy
 
 
 .. _installation-from-source:
@@ -148,8 +148,8 @@ python3
 BOOST
   the BOOST C++ library ``boost-python`` for interfacing Python and C++;
 
-h5py
-  the Python interface to HDF5;
+dynesty
+  The Python Dynamic Nested Sampling package for estimating Bayesian posteriors and evidences (needed for some functionality);
 
 matplotlib
   the Python plotting library in version 2.0 or higher;
@@ -189,17 +189,17 @@ by running the following commands:
   # for the 'System Software'
   sudo apt-get install g++ autoconf automake libtool pkg-config libboost-filesystem-dev libboost-system-dev libyaml-cpp-dev
   # for the 'Python Software'
-  sudo apt-get install python3-dev libboost-python-dev python3-h5py python3-matplotlib python3-networkx python3-scipy python3-yaml
+  sudo apt-get install python3-dev libboost-python-dev python3-matplotlib python3-networkx python3-scipy python3-yaml
   # for the 'Scientific Software'
   sudo apt-get install libgsl0-dev
 
-We recommend that you install ``pypmc`` and ``wilson``, and upgrade ``matplotlib`` to the latest available version, by running the following command:
+We recommend that you install ``dynesty``, ``pypmc`` and ``wilson``, and upgrade ``matplotlib`` to the latest available version, by running the following command:
 
 ::
 
   # for the 'pip3' command
   apt-get install python3-pip
-  pip3 install --user pypmc wilson
+  pip3 install --user dynesty pypmc wilson
   pip3 install --user --upgrade matplotlib
 
 
@@ -234,7 +234,7 @@ To install the remaining packages, run the following command in a shell
 
 ::
 
-  pip3 install h5py matplotlib scipy PyYAML
+  pip3 install matplotlib scipy PyYAML
 
 
 Installing EOS

@@ -109,7 +109,7 @@ namespace eos
                  UsedParameter(p[_par_name("T1_1")], *this),
                  UsedParameter(p[_par_name("T1_2")], *this),
                  UsedParameter(p[_par_name("T1_3")], *this) }},
-        _a_T2{{ /* T2_0 parameter determined by identity T1(0) = T2(0) */ 
+        _a_T2{{ /* T2_0 parameter determined by identity T1(0) = T2(0) */
                  UsedParameter(p[_par_name("T2_1")], *this),
                  UsedParameter(p[_par_name("T2_2")], *this),
                  UsedParameter(p[_par_name("T2_3")], *this) }},
@@ -367,7 +367,17 @@ namespace eos
     {
         return 0.0;  //  TODO
     }
+    std::vector<OptionSpecification>::const_iterator
+    BGL1997FormFactors<BToDstar>::begin_options()
+    {
+        return _options.cbegin();
+    }
 
+    std::vector<OptionSpecification>::const_iterator
+    BGL1997FormFactors<BToDstar>::end_options()
+    {
+        return _options.cend();
+    }
 
     std::string
     BGL1997FormFactors<BToD>::_par_name(const std::string & ff_name)
@@ -446,6 +456,18 @@ namespace eos
     BGL1997FormFactors<BToD>::f_plus_T(const double & /*s*/) const
     {
         return 0.0; //  TODO
+    }
+
+    std::vector<OptionSpecification>::const_iterator
+    BGL1997FormFactors<BToD>::begin_options()
+    {
+        return _options.cbegin();
+    }
+
+    std::vector<OptionSpecification>::const_iterator
+    BGL1997FormFactors<BToD>::end_options()
+    {
+        return _options.cend();
     }
 }
 
